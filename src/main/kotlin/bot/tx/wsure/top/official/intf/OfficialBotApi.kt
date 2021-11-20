@@ -3,9 +3,6 @@ package bot.tx.wsure.top.official.intf
 import bot.tx.wsure.top.config.Global
 import bot.tx.wsure.top.official.dtos.api.Role
 import bot.tx.wsure.top.official.dtos.api.RolesApiRes
-import bot.tx.wsure.top.utils.HttpUtils.officialApiDelete
-import bot.tx.wsure.top.utils.HttpUtils.officialApiGet
-import bot.tx.wsure.top.utils.HttpUtils.officialApiPut
 import bot.tx.wsure.top.utils.JsonUtils.jsonToObjectOrNull
 import bot.tx.wsure.top.utils.OkHttpUtils
 import org.slf4j.Logger
@@ -21,30 +18,26 @@ object OfficialBotApi {
         "Authorization" to Global.token
     )
 
-    suspend fun getRoles(guildId:String):List<Role>{
-        val rolesApiRes = roles.replace("{{guild_id}}", guildId)
-            .officialApiGet<RolesApiRes>()
-        logger.info("roles :{}",rolesApiRes)
-        return rolesApiRes?.roles ?: emptyList()
-    }
     fun getRolesOkhttp(guildId:String):List<Role>{
         val url = roles.replace("{{guild_id}}", guildId)
         val rolesApiRes = OkHttpUtils.getJson(url,officeApiHeader).jsonToObjectOrNull<RolesApiRes>()
         logger.info("roles :{}",rolesApiRes)
         return rolesApiRes?.roles ?: emptyList()
     }
-    suspend fun addRoles(guildId:String,userId:Long,roleId:String):Boolean{
-        editRole.replace("{{guild_id}}", guildId)
+    fun addRoles(guildId:String,userId:String,roleId:String):Boolean{
+        val url = editRole.replace("{{guild_id}}", guildId)
             .replace("{{user_id}}",userId.toString())
             .replace("{{role_id}}",roleId)
-            .officialApiPut<Any>()
-        return true
+        val res = OkHttpUtils.put(url, emptyMap(), officeApiHeader)
+        logger.info("addRoles $url res:${res.isSuccessful}")
+        return res.isSuccessful
     }
-    suspend fun delRoles(guildId:String,userId:Long,roleId:String):Boolean{
-        editRole.replace("{{guild_id}}", guildId)
+    fun delRoles(guildId:String,userId:String,roleId:String):Boolean{
+        val url = editRole.replace("{{guild_id}}", guildId)
             .replace("{{user_id}}",userId.toString())
             .replace("{{role_id}}",roleId)
-            .officialApiDelete<Any>()
-        return true
+        val res = OkHttpUtils.delete(url, emptyMap(), officeApiHeader)
+        logger.info("delRoles res:${res.isSuccessful}")
+        return res.isSuccessful
     }
 }

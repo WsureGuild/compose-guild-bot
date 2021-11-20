@@ -87,13 +87,13 @@ data class Properties(
 @Serializable
 data class Author(
     @SerialName("avatar")
-    val avatar: String? = null,
+    val avatar: String,
     @SerialName("bot")
-    val bot: Boolean? = null,
+    val bot: Boolean,
     @SerialName("id")
-    val id: String? = null,
+    val id: String,
     @SerialName("username")
-    val username: String? = null
+    val username: String
 )
 
 @Serializable

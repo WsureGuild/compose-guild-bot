@@ -24,7 +24,7 @@ object Global {
             serializer = KotlinxSerializer(JsonUtils.formatter)
         }
     }
-    val roles by lazy { runBlocking { OfficialBotApi.getRoles(CONFIG.devGuild.id) } }
+    val roles by lazy {  OfficialBotApi.getRolesOkhttp(CONFIG.devGuild.id) }
     val rolesAhoCorasickMatcher = AhoCorasickMatcher(roles){ it.name }
 
 }

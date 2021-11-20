@@ -36,5 +36,6 @@ class ApplicationTest {
     fun testOkhttp(){
         val roles = OfficialBotApi.getRolesOkhttp(Global.CONFIG.devGuild.id)
         println(roles)
+//        OfficialBotApi.delRoles(Global.CONFIG.devGuild.id,"15112013223705719381","10014689")
     }
 }

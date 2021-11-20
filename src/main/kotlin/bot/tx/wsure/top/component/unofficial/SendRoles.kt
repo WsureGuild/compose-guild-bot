@@ -1,5 +1,6 @@
 package bot.tx.wsure.top.component.unofficial
 
+import bot.tx.wsure.top.config.Global
 import bot.tx.wsure.top.official.dtos.api.Role
 import bot.tx.wsure.top.official.intf.OfficialBotApi
 import bot.tx.wsure.top.official.intf.OfficialBotApi.roles
@@ -20,10 +21,8 @@ class SendRoles :UnOfficialBotEvent(){
     val OFFICIAL_BOT_ID = 144115218678097866L
 
 
-    val roles by lazy { runBlocking { OfficialBotApi.getRoles(OFFICIAL_GUILD_ID) }}
-
     override suspend fun onGuildMessage(sender: UnofficialMessageSender, message: GuildMessage) {
-        val ac = AhoCorasickMatcher(roles){ it.name }
+        val ac = Global.rolesAhoCorasickMatcher
         val res = ac.search(message.message)
         if(res.isNotEmpty()){
             sender.sendMessage(message.toSendGuildChannelMsgAction(OFFICIAL_BOT_ID.toAtCC() + " \n" + message.userId.toAtCC()+ " \n" +res.joinToString(","){ it.id }))
