@@ -27,6 +27,7 @@ open class WsBotClient<T:BaseBotListener>(
 
     override fun reconnect(){
         connectWebSocket.close(1000,"reconnect")
+        logger.info("reconnecting ... ")
         connectWebSocket = wsClient.newWebSocket(wsRequest,listener)
     }
 

@@ -18,9 +18,6 @@ import kotlinx.coroutines.launch
 @OptIn(InternalAPI::class, InternalCoroutinesApi::class)
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-//        launch {
-//            goCqHttp()
-//        }
         configureRouting()
         configureSecurity()
         configureHTTP()

@@ -35,11 +35,18 @@ class UnOfficialBotListener(
 ): BaseBotListener() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
+    private var retryTimer:Timer? = null
+
+    val retryTask:suspend ()-> Unit = suspend {
+        logger.warn(" try to reconnect ")
+        reconnect()
+    }
     override fun onOpen(webSocket: WebSocket, response: Response) {
         logger.info("onOpen ")
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
+        stopRetryReconnect()
         logger.info("received message $text")
         text.jsonToObjectOrNull<BaseEventDto>(false)?.also { event->
             when (event.postType){
@@ -70,15 +77,27 @@ class UnOfficialBotListener(
     @OptIn(DelicateCoroutinesApi::class)
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
         logger.warn("onClosed code:$code reason:$reason")
-        GlobalScope.launch {
-            logger.warn(" waiting 1000ms to reconnect ")
-            delay(1000)
-            reconnect()
-        }
+
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         logger.error("onFailure response:${response?.message} ",t)
+        startRetryReconnect()
+    }
+
+    private fun startRetryReconnect() {
+        if(retryTimer == null ){
+            logger.info("start retry reconnect")
+            retryTimer = ScheduleUtils.loopEvent(retryTask,Date(),3000)
+        }
+    }
+
+    private fun stopRetryReconnect() {
+        if(retryTimer != null){
+            logger.info("stop retry reconnect")
+            retryTimer?.cancel()
+            retryTimer = null
+        }
 
     }
 
