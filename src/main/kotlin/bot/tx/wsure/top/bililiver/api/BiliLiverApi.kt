@@ -1,5 +1,8 @@
 package bot.tx.wsure.top.bililiver.api
 
+import bot.tx.wsure.top.bililiver.dtos.api.BiliResponse
+import bot.tx.wsure.top.bililiver.dtos.api.room.Room
+import bot.tx.wsure.top.bililiver.dtos.api.token.TokenAndUrl
 import bot.tx.wsure.top.utils.JsonUtils.jsonToObjectOrNull
 import bot.tx.wsure.top.utils.OkHttpUtils
 import bot.tx.wsure.top.utils.UA
@@ -11,10 +14,19 @@ object BiliLiverApi {
 
     private const val ROOM_INFO = "https://api.live.bilibili.com/room_ex/v1/RoomNews/get?roomid={{room_id}}"
 
-    fun getRealRoomId(roomId:String):Room?{
-        val url = ROOM_INFO.replace("{{room_id}}",roomId.toString())
-        val res = OkHttpUtils.getJson(url, getApiHeader(roomId)).jsonToObjectOrNull<SuccessRoomInfo>()
+    private const val TOKEN_AND_URL = "https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id={{real_room_id}}&type=0"
+
+    fun getRealRoomId(roomId:String): Room?{
+        val url = ROOM_INFO.replace("{{room_id}}", roomId)
+        val res = OkHttpUtils.getJson(url, getApiHeader(roomId)).jsonToObjectOrNull<BiliResponse<Room>>()
         logger.info("$roomId getRealRoomId ${if(res != null) "success" else "fail"}")
+        return res?.data
+    }
+    fun getTokenAndUrl(realRoomId:String): TokenAndUrl?{
+        val url = TOKEN_AND_URL.replace("{{real_room_id}}", realRoomId)
+        val res = OkHttpUtils.getJson(url, mutableMapOf("User-Agent" to UA.PC.getValue()))
+            .jsonToObjectOrNull<BiliResponse<TokenAndUrl>>()
+        logger.info("$realRoomId getTokenAndUrl ${if(res != null) "success" else "fail"}")
         return res?.data
     }
 

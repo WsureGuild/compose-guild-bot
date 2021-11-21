@@ -1,4 +1,4 @@
-package bot.tx.wsure.top.bililiver.event
+package bot.tx.wsure.top.bililiver.dtos.event
 
 import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.brotli
 import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.readUInt32BE
@@ -8,16 +8,21 @@ import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.zlib
 import bot.tx.wsure.top.bililiver.enums.Operation
 import bot.tx.wsure.top.bililiver.enums.ProtocolVersion
 import kotlinx.serialization.Serializable
+import okio.ByteString
+import okio.ByteString.Companion.toByteString
 
 @Serializable
 open class ChatPackage(
     val packetLength: Int,
-    val headerLength: Int,
+    val headerLength: Int = 16,
     val protocolVersion: ProtocolVersion,
     val operation: Operation,
-    val bodyHeaderLength: Int,
+    val bodyHeaderLength: Int = 1,
     val body: ByteArray
 ) {
+
+    constructor(protocolVersion: ProtocolVersion,operation: Operation,body: ByteArray):
+            this(body.size+16,16,protocolVersion,operation,1,body)
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -62,8 +67,8 @@ open class ChatPackage(
         }
     }
 
-    fun decode(): ByteArray {
-        return headerByteArray() + body
+    fun encode(): ByteString {
+        return (headerByteArray() + body).toByteString()
     }
 
     open fun headerByteArray(): ByteArray {

@@ -2,7 +2,7 @@ package bot.tx.wsure.top.bililiver.api
 
 import bot.tx.wsure.top.bililiver.enums.Operation
 import bot.tx.wsure.top.bililiver.enums.ProtocolVersion
-import bot.tx.wsure.top.bililiver.event.ChatPackage
+import bot.tx.wsure.top.bililiver.dtos.event.ChatPackage
 import com.aayushatharva.brotli4j.Brotli4jLoader
 import com.aayushatharva.brotli4j.decoder.BrotliInputStream
 import okio.ByteString
@@ -14,7 +14,7 @@ import kotlin.math.pow
 
 object BiliLiverChatUtils {
 
-    fun ByteString.toChatPackage():ChatPackage{
+    fun ByteString.toChatPackage(): ChatPackage {
         if(this.size < 16) throw RuntimeException(" unknown package ")
         val headerByteArray = this.substring(0,16).hex().toUint8Array()
         val bodyByteArray = this.substring(16).toByteArray()
@@ -28,7 +28,7 @@ object BiliLiverChatUtils {
         )
     }
 
-    fun ByteArray.toChatPackage():ChatPackage{
+    fun ByteArray.toChatPackage(): ChatPackage {
         return this.toByteString().toChatPackage()
     }
 

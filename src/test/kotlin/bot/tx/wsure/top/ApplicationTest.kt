@@ -1,12 +1,12 @@
 package bot.tx.wsure.top
 
-import bot.tx.wsure.top.bililiver.event.HeartbeatPackage
-import bot.tx.wsure.top.config.Global
-import bot.tx.wsure.top.official.intf.OfficialBotApi
+import bot.tx.wsure.top.bililiver.api.BiliLiverApi
+import bot.tx.wsure.top.bililiver.dtos.event.HeartbeatPackage
 import io.ktor.http.*
 import kotlin.test.*
 import io.ktor.server.testing.*
 import bot.tx.wsure.top.plugins.*
+import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import bot.tx.wsure.top.utils.WeiBoUtils
 import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.toByteString
@@ -36,8 +36,10 @@ class ApplicationTest {
 
     @Test
     fun testOkhttp(){
-
-        println(HeartbeatPackage.decode().toByteString().hex())
+        val room = BiliLiverApi.getRealRoomId("510")
+        val tokenAndUrl = BiliLiverApi.getTokenAndUrl(room!!.roomid)
+        println(tokenAndUrl?.objectToJson())
+        println(HeartbeatPackage.encode().toByteString().hex())
 //        OfficialBotApi.delRoles(Global.CONFIG.devGuild.id,"15112013223705719381","10014689")
     }
 }
