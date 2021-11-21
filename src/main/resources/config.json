@@ -1,0 +1,14 @@
+{
+  "weiboCookie": "你的微博cookie 手机版的",
+  "officialBot": {
+    "id": 111111111,
+    "token": " 官方bot token (控制台查看) "
+  },
+  "devGuild": {
+    "id" : "官方bot所绑定开发频道，请在websocket消息中拿",
+    "channels" : {
+      "devTest" : "测试使用的channelId，Channels 是map，可以自己配置key value",
+      "sendRoles" : "1330594"
+    }
+  }
+}

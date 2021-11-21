@@ -17,7 +17,7 @@ open class ChatPackage(
     val operation: Operation,
     val bodyHeaderLength: Int,
     val body: ByteArray
-    ) {
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -43,12 +43,13 @@ open class ChatPackage(
         result = 31 * result + body.contentHashCode()
         return result
     }
-    open fun content():String?{
-        return when(protocolVersion){
+
+    open fun content(): String? {
+        return when (protocolVersion) {
             ProtocolVersion.JSON -> {
                 return String(body)
             }
-            ProtocolVersion.INT->{
+            ProtocolVersion.INT -> {
                 return body.readUInt32BE().toString()
             }
             ProtocolVersion.BROTLI -> {
@@ -61,16 +62,17 @@ open class ChatPackage(
         }
     }
 
-    fun decode():ByteArray{
+    fun decode(): ByteArray {
         return headerByteArray() + body
     }
-    open fun headerByteArray():ByteArray{
+
+    open fun headerByteArray(): ByteArray {
         val header = ByteArray(16)
-        header.write(packetLength,4-1)
-        header.write(headerLength,6-1)
-        header.write(protocolVersion.code,8-1)
-        header.write(operation.code,12-1)
-        header.write(bodyHeaderLength,16-1)
+        header.write(packetLength, 4 - 1)
+        header.write(headerLength, 6 - 1)
+        header.write(protocolVersion.code, 8 - 1)
+        header.write(operation.code, 12 - 1)
+        header.write(bodyHeaderLength, 16 - 1)
         return header
     }
 
