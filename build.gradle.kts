@@ -2,7 +2,8 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val exposedVersion:String by project
-
+val brotliVersion = "1.6.0"
+val operatingSystem: OperatingSystem = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentOperatingSystem()
 plugins {
     application
     kotlin("jvm") version "1.6.0"
@@ -42,6 +43,19 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 
     implementation("org.jetbrains.exposed:exposed-jodatime:$exposedVersion")
+
+    implementation("com.aayushatharva.brotli4j:brotli4j:$brotliVersion")
+    implementation(
+        "com.aayushatharva.brotli4j:native-${
+            if (operatingSystem.isWindows) "windows-x86_64"
+            else if (operatingSystem.isMacOsX) "osx-x86_64"
+            else if (operatingSystem.isLinux)
+                if (org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentArchitecture().isArm) "linux-aarch64"
+                else "native-linux-x86_64"
+            else ""
+        }:$brotliVersion"
+    )
+
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

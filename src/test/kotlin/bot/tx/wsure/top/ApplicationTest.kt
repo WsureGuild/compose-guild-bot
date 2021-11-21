@@ -1,5 +1,6 @@
 package bot.tx.wsure.top
 
+import bot.tx.wsure.top.bililiver.event.HeartbeatPackage
 import bot.tx.wsure.top.config.Global
 import bot.tx.wsure.top.official.intf.OfficialBotApi
 import io.ktor.http.*
@@ -8,6 +9,7 @@ import io.ktor.server.testing.*
 import bot.tx.wsure.top.plugins.*
 import bot.tx.wsure.top.utils.WeiBoUtils
 import kotlinx.coroutines.runBlocking
+import okio.ByteString.Companion.toByteString
 
 class ApplicationTest {
     @Test
@@ -34,8 +36,8 @@ class ApplicationTest {
 
     @Test
     fun testOkhttp(){
-        val roles = OfficialBotApi.getRolesOkhttp(Global.CONFIG.devGuild.id)
-        println(roles)
+
+        println(HeartbeatPackage.decode().toByteString().hex())
 //        OfficialBotApi.delRoles(Global.CONFIG.devGuild.id,"15112013223705719381","10014689")
     }
 }
