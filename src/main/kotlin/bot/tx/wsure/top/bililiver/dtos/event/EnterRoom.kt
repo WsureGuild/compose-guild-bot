@@ -5,6 +5,7 @@ import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Transient
 
 
 @Serializable
@@ -12,7 +13,7 @@ data class EnterRoom(
     @SerialName("roomid")
     val roomid: Long,
     @SerialName("key")
-    val key: String,
+    val key: String? = null,
     @SerialName("uid")
     val uid: Int = 0,
     @SerialName("protover")
@@ -24,6 +25,6 @@ data class EnterRoom(
 ){
     fun toPackage():ChatPackage{
         val bodyByteArray = this.objectToJson().toByteArray()
-        return ChatPackage(ProtocolVersion.JSON,Operation.HELLO, bodyByteArray)
+        return ChatPackage(ProtocolVersion.INT,Operation.HELLO, bodyByteArray)
     }
 }

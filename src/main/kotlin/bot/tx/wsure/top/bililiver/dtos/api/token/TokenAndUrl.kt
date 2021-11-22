@@ -32,4 +32,8 @@ data class Host(
     val wsPort: Int,
     @SerialName("wss_port")
     val wssPort: Int
-)
+){
+    fun toWssUrl():String{
+        return "ws://$host:$wsPort/sub"
+    }
+}

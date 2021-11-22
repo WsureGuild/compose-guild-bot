@@ -1,5 +1,7 @@
 package bot.tx.wsure.top.common
 
+import bot.tx.wsure.top.utils.UA
+import io.ktor.util.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.slf4j.Logger
@@ -18,10 +20,16 @@ open class WsBotClient<T:BaseBotListener>(
             .connectTimeout(3, TimeUnit.SECONDS) //设置连接超时时间
             .build()
     }
-    private val wsRequest: Request by lazy { Request.Builder().get().url(wsUrl).build() }
+    private val wsRequest: Request by lazy { Request.Builder()
+        .get()
+        .addHeader("User-Agent",UA.PC.getValue())
+        .url(wsUrl)
+        .build()
+    }
     private var connectWebSocket = wsClient.newWebSocket(wsRequest, listener)
 
     init {
+        logger.info("url :$wsUrl ")
         listener.reconnect { reconnect() }
     }
 

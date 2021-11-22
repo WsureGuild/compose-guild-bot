@@ -1,48 +1,52 @@
 package bot.tx.wsure.top.bililiver
 
-import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.toChatPackage
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
 import bot.tx.wsure.top.bililiver.dtos.event.ChatPackage
 import bot.tx.wsure.top.bililiver.dtos.event.EnterRoom
+import bot.tx.wsure.top.bililiver.dtos.event.HeartbeatPackage
 import bot.tx.wsure.top.bililiver.enums.Operation
 import bot.tx.wsure.top.common.BaseBotListener
+import bot.tx.wsure.top.utils.ScheduleUtils
 import okhttp3.Response
 import okhttp3.WebSocket
 import okio.ByteString
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.*
+import java.util.concurrent.atomic.AtomicLong
 
 class BiliLiverListener(
     val roomId: String,
     val token: String,
-    val biliLiverEvents: List<BiliLiverEvent>
+    val biliLiverEvents: List<BiliLiverEvent>,
+    private val heartbeatDelay: Long = 30000,
+    private val reconnectTimeout: Long = 60000,
 ) : BaseBotListener() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    val enterRoom = EnterRoom(roomId.toLong(),token)
+    private var hbTimer: Timer? = null
+    private val lastReceivedHeartBeat = AtomicLong(0)
+
+    var enterRoom = EnterRoom(roomId.toLong(),token)
     override fun onOpen(webSocket: WebSocket, response: Response) {
         logger.info("onOpen ,send enterRoom package")
-        webSocket.send(enterRoom.toPackage().encode())
+        logger.info("enter room hex : ${enterRoom.toPackage().encode().hex()}")
+        webSocket.sendAndPrintLog(enterRoom.toPackage())
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        val pkg = kotlin.runCatching { bytes.toChatPackage() }.getOrNull()
-
-        //如果无法解析消息，直接打印hex并返回
-        if(pkg == null){
-            logger.warn("onMessage ,but can't decode hex:${ bytes.hex() }")
-            return
-        }
-        logger.info("onMessage ,context:${ pkg.content() }")
-
+        logger.info("onMessage ,context:${bytes.hex() }")
+        val pkg = bytes.toChatPackage()
+        logger.info("onMessage ${pkg.protocolVersion},${pkg.operation} ,context:${ pkg.content() }")
         when(pkg.operation){
             Operation.HELLO_ACK -> {
-                initHeartbeat()
+                initHeartbeat(webSocket)
             }
             Operation.HEARTBEAT_ACK -> {
                 receivedHeartbeat()
             }
             Operation.NOTICE -> {
-                onNotice(webSocket,pkg)
+                onNotice(pkg)
             }
             else -> {
                 logger.debug("unhandled operation")
@@ -58,16 +62,55 @@ class BiliLiverListener(
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+        logger.warn("onFailure , try to reconnect")
+        reconnectClient()
     }
 
-    private fun onNotice(webSocket: WebSocket, pkg: ChatPackage) {
+    private fun reconnectClient() {
+        hbTimer?.cancel()
+        reconnect()
+    }
+
+    private fun onNotice(pkg: ChatPackage) {
+        val content = pkg.content()
+
 
     }
-    private fun initHeartbeat() {
-        TODO("Not yet implemented")
+    private fun initHeartbeat(webSocket:WebSocket) {
+        lastReceivedHeartBeat.getAndSet(System.currentTimeMillis())
+        val processor = createHeartBeatProcessor(webSocket)
+        //  先取消以前的定时器
+        hbTimer?.cancel()
+        // 启动新的心跳
+        hbTimer = ScheduleUtils.loopEvent(processor,Date(),heartbeatDelay)
     }
 
     private fun receivedHeartbeat() {
-        TODO("Not yet implemented")
+        lastReceivedHeartBeat.getAndSet(System.currentTimeMillis())
+    }
+
+    private fun createHeartBeatProcessor(webSocket: WebSocket):suspend () ->Unit {
+        return suspend {
+            val last = lastReceivedHeartBeat.get()
+            val now = System.currentTimeMillis()
+            if( now - last > reconnectTimeout){
+                logger.warn("heartbeat timeout , try to reconnect")
+                reconnectClient()
+            } else {
+
+                webSocket.sendAndPrintLog(HeartbeatPackage,true)
+
+            }
+
+        }
+    }
+
+    private fun WebSocket.sendAndPrintLog(pkg: ChatPackage, isHeartbeat:Boolean = false){
+        if(isHeartbeat){
+            logger.info("send Heartbeat ${pkg.content()}")
+        } else {
+            logger.info("send text message ${pkg.content()}")
+        }
+        this.send(pkg.encode())
     }
 }

@@ -1,5 +1,7 @@
 package bot.tx.wsure.top
 
+import bot.tx.wsure.top.bililiver.BiliLiverClient
+import bot.tx.wsure.top.bililiver.api.BiliLiverApi
 import bot.tx.wsure.top.config.Global.token
 import bot.tx.wsure.top.official.OfficialBotClient
 import bot.tx.wsure.top.component.official.EditRoles
@@ -24,6 +26,10 @@ fun main() {
         configureMonitoring()
         configureSerialization()
         configureSockets()
+        val room = BiliLiverApi.getRealRoomId("10339464")
+        val tokenAndUrl = BiliLiverApi.getTokenAndUrl(room!!.roomid)
+
+//        val client = BiliLiverClient(room.roomid,tokenAndUrl!!.token)
         val unOfficialBotClient = UnOfficialBotClient( listOf(
             YbbTrain(),
 //            SendRoles()

@@ -1,10 +1,14 @@
 package bot.tx.wsure.top.bililiver.dtos.event
 
-import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.brotli
-import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.readUInt32BE
-import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.toChatPackage
-import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.write
-import bot.tx.wsure.top.bililiver.api.BiliLiverChatUtils.zlib
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.brotli
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.readUInt32BE
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.write
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.writeInt32BE
+import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.zlib
+import bot.tx.wsure.top.bililiver.dtos.event.HeartbeatPackage.body
+import bot.tx.wsure.top.bililiver.dtos.event.HeartbeatPackage.packetLength
 import bot.tx.wsure.top.bililiver.enums.Operation
 import bot.tx.wsure.top.bililiver.enums.ProtocolVersion
 import kotlinx.serialization.Serializable
@@ -49,7 +53,7 @@ open class ChatPackage(
         return result
     }
 
-    open fun content(): String? {
+    open fun content(): String {
         return when (protocolVersion) {
             ProtocolVersion.JSON -> {
                 return String(body)
@@ -58,12 +62,12 @@ open class ChatPackage(
                 return body.readUInt32BE().toString()
             }
             ProtocolVersion.BROTLI -> {
-                return body.brotli().toChatPackage().content()
+                return body.brotli().toChatPackageList().joinToString("\n"){ it.content() }
             }
             ProtocolVersion.ZLIB_INFLATE -> {
-                return body.zlib().toChatPackage().content()
+                return body.zlib().toChatPackageList().joinToString("\n"){ it.content() }
             }
-            else -> null
+            else -> ""
         }
     }
 
@@ -73,7 +77,7 @@ open class ChatPackage(
 
     open fun headerByteArray(): ByteArray {
         val header = ByteArray(16)
-        header.write(packetLength, 4 - 1)
+        header.writeInt32BE(packetLength.toLong(), 0)
         header.write(headerLength, 6 - 1)
         header.write(protocolVersion.code, 8 - 1)
         header.write(operation.code, 12 - 1)

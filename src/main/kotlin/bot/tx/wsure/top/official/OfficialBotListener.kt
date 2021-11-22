@@ -70,7 +70,7 @@ class OfficialBotListener(
                 }
                 OPCodeEnums.Reconnect -> {
                     logger.warn("need reconnect !!")
-                    reconnect()
+                    reconnectClient()
                 }
                 OPCodeEnums.Invalid_Session -> {
                     webSocket.cancel()
@@ -94,6 +94,8 @@ class OfficialBotListener(
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+        logger.warn("onFailure try to reconnect")
+        reconnectClient()
     }
 
     fun WebSocket.logInfo():String{
@@ -107,7 +109,7 @@ class OfficialBotListener(
         lastReceivedHeartBeat.getAndSet(System.currentTimeMillis())
         val processor = createHeartBeatProcessor(webSocket)
         //  先取消以前的定时器
-        hbTimer?.also { it.cancel() }
+        hbTimer?.cancel()
         // 启动新的心跳
         hbTimer = ScheduleUtils.loopEvent(processor,Date(),heartbeatDelay)
     }
@@ -118,8 +120,7 @@ class OfficialBotListener(
             val now = System.currentTimeMillis()
             if( now - last > reconnectTimeout){
                 logger.warn("heartbeat timeout , try to reconnect")
-                hbTimer?.cancel()
-                reconnect()
+                reconnectClient()
             } else {
                 val hb = HeartbeatDto(messageCount.get()).objectToJson()
                 webSocket.sendAndPrintLog(hb,true)
@@ -127,6 +128,11 @@ class OfficialBotListener(
             }
 
         }
+    }
+
+    private fun reconnectClient(){
+        hbTimer?.cancel()
+        reconnect()
     }
 
     private fun WebSocket.sendAndPrintLog(text: String, isHeartbeat:Boolean = false){
