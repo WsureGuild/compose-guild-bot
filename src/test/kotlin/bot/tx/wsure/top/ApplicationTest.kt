@@ -4,6 +4,7 @@ import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.brotli
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
 import bot.tx.wsure.top.bililiver.BiliLiverClient
+import bot.tx.wsure.top.bililiver.BiliLiverConsole
 import bot.tx.wsure.top.bililiver.api.BiliLiverApi
 import bot.tx.wsure.top.bililiver.dtos.event.EnterRoom
 import bot.tx.wsure.top.bililiver.dtos.event.HeartbeatPackage
@@ -49,10 +50,9 @@ class ApplicationTest {
     }
     @Test
     fun testOkhttp(){
-        val room = BiliLiverApi.getRealRoomId("22300771")
-        val tokenAndUrl = BiliLiverApi.getTokenAndUrl(room!!.roomid)
-
-        val client = BiliLiverClient(room.roomid,tokenAndUrl!!.token)
+        mutableSetOf( "14475263","14343955","22582590","23208247","725364","23612283","23256987").map {
+            BiliLiverConsole(it)
+        }
 
         runBlocking { delay(99999999999999) }
 //        OfficialBotApi.delRoles(Global.CONFIG.devGuild.id,"15112013223705719381","10014689")
