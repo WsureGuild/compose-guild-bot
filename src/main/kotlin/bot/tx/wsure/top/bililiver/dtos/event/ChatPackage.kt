@@ -2,13 +2,10 @@ package bot.tx.wsure.top.bililiver.dtos.event
 
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.brotli
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.readUInt32BE
-import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.write
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.writeInt32BE
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.zlib
-import bot.tx.wsure.top.bililiver.dtos.event.HeartbeatPackage.body
-import bot.tx.wsure.top.bililiver.dtos.event.HeartbeatPackage.packetLength
 import bot.tx.wsure.top.bililiver.enums.Operation
 import bot.tx.wsure.top.bililiver.enums.ProtocolVersion
 import kotlinx.serialization.Serializable
@@ -59,7 +56,7 @@ open class ChatPackage(
                 return String(body)
             }
             ProtocolVersion.INT -> {
-                return body.readUInt32BE().toString()
+                return String(body) //if() body.readUInt32BE().toString()
             }
             ProtocolVersion.BROTLI -> {
                 return body.brotli().toChatPackageList().joinToString("\n"){ it.content() }
