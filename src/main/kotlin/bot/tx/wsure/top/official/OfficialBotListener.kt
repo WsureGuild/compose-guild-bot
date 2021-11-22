@@ -41,7 +41,7 @@ class OfficialBotListener(
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
-        logger.info("received message $text")
+        logger.debug("received message $text")
         text.jsonToObjectOrNull<Operation>()?.also { opType ->
 
             when(opType.type()){
@@ -59,8 +59,8 @@ class OfficialBotListener(
                         messageCount.getAndSet(dispatchDto.s)
                         when(dispatchDto.type){
                             DispatchEnums.AT_MESSAGE_CREATE -> {
-                                logger.info("event AT_MESSAGE_CREATE ")
                                 text.jsonToObjectOrNull<AtMessageCreateEvent>()?.also { guildAtMessage ->
+                                    logger.debug("received AT_MESSAGE_CREATE ${guildAtMessage.objectToJson()}")
                                     officialEvents.forEach { runBlocking { it.onAtMessageCreate(guildAtMessage) } }
                                 }
                             }
@@ -137,7 +137,7 @@ class OfficialBotListener(
 
     private fun WebSocket.sendAndPrintLog(text: String, isHeartbeat:Boolean = false){
         if(isHeartbeat){
-            logger.info("send Heartbeat $text")
+            logger.debug("send Heartbeat $text")
         } else {
             logger.info("send text message $text")
         }

@@ -17,4 +17,8 @@ data class Room(
     val uid: String,
     @SerialName("uname")
     val uname: String
-)
+){
+    fun toRoomStr():String{
+        return "主播:$uname 房间:$roomid"
+    }
+}

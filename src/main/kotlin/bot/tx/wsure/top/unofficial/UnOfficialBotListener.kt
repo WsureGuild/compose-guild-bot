@@ -47,7 +47,7 @@ class UnOfficialBotListener(
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         stopRetryReconnect()
-        logger.info("received message $text")
+        logger.debug("received message $text")
         text.jsonToObjectOrNull<BaseEventDto>(false)?.also { event->
             when (event.postType){
                 PostTypeEnum.MESSAGE -> {
@@ -55,6 +55,7 @@ class UnOfficialBotListener(
                         when(message.messageType){
                             MessageTypeEnums.GUILD -> {
                                 text.jsonToObjectOrNull<GuildMessage>()?.also { guildMessage ->
+                                    logger.debug("received GUILD_MESSAGE $text")
                                     officialEvents.onEach { runBlocking { it.onGuildMessage(UnofficialMessageSender(webSocket),guildMessage) } }
                                 }
                             }
@@ -103,7 +104,7 @@ class UnOfficialBotListener(
 
     private fun WebSocket.sendAndPrintLog(text: String, isHeartbeat:Boolean = false){
         if(isHeartbeat){
-            logger.info("send Heartbeat $text")
+            logger.debug("send Heartbeat $text")
         } else {
             logger.info("send text message $text")
         }

@@ -34,6 +34,6 @@ data class Host(
     val wssPort: Int
 ){
     fun toWssUrl():String{
-        return "ws://$host:$wsPort/sub"
+        return "wss://$host/sub"
     }
 }

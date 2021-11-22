@@ -8,7 +8,7 @@ class BiliLiverConsole(roomId:String,eventList:(Room) ->List<BiliLiverEvent> = {
         BiliLiverApi.getRealRoomId(roomId)?.also { room ->
             BiliLiverApi.getTokenAndUrl(room.roomid)?.also { tokenAndUrl ->
 
-                BiliLiverClient(room.roomid, tokenAndUrl.token,eventList(room) )
+                BiliLiverClient(room, tokenAndUrl,eventList(room) )
             }
         }
     }
