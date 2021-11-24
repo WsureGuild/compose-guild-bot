@@ -1,5 +1,4 @@
 package bot.tx.wsure.top.bililiver.dtos.event.cmd
-import bot.tx.wsure.top.bililiver.dtos.event.MedalInfo
 import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
@@ -10,15 +9,15 @@ data class SendGift(
     @SerialName("action")
     val action: String,
     @SerialName("batch_combo_id")
-    val batchComboId: String,
+    val batchComboId: String?,
     @SerialName("batch_combo_send")
-    val batchComboSend: Int?,
+    val batchComboSend: BatchComboSend?,
     @SerialName("beatId")
     val beatId: String,
     @SerialName("biz_source")
     val bizSource: String,
-//    @SerialName("blind_gift")
-//    val blindGift: Any,
+    @SerialName("blind_gift")
+    val blindGift: BlindGift?,
     @SerialName("broadcast_id")
     val broadcastId: Int,
     @SerialName("coin_type")
@@ -100,7 +99,7 @@ data class SendGift(
     @SerialName("timestamp")
     val timestamp: Int,
 //    @SerialName("top_list")
-//    val topList: Any,
+//    val topList: Any?,
     @SerialName("total_coin")
     val totalCoin: Int,
     @SerialName("uid")
@@ -109,13 +108,80 @@ data class SendGift(
     val uname: String
 )
 @Serializable
+data class MedalInfo(
+    @SerialName("anchor_roomid")
+    val anchorRoomid: Int,
+    @SerialName("anchor_uname")
+    val anchorUname: String,
+    @SerialName("guard_level")
+    val guardLevel: Int,
+    @SerialName("icon_id")
+    val iconId: Int,
+    @SerialName("is_lighted")
+    val isLighted: Int,
+    @SerialName("medal_color")
+    val medalColor: Int,
+    @SerialName("medal_color_border")
+    val medalColorBorder: Int,
+    @SerialName("medal_color_end")
+    val medalColorEnd: Int,
+    @SerialName("medal_color_start")
+    val medalColorStart: Int,
+    @SerialName("medal_level")
+    val medalLevel: Int,
+    @SerialName("medal_name")
+    val medalName: String,
+    @SerialName("special")
+    val special: String,
+    @SerialName("target_id")
+    val targetId: Int
+)
+
+@Serializable
 data class ComboInfo(
     @SerialName("action")
     val action: String,
-    @SerialName("combo_id")
-    val comboId: String,
-    @SerialName("combo_num")
-    val comboNum: Int,
+    @SerialName("batch_combo_id")
+    val batchComboId: String?,
+    @SerialName("batch_combo_num")
+    val batchComboNum: Int?,
+    @SerialName("blind_gift")
+    val blindGift: BlindGift?,
+    @SerialName("gift_id")
+    val giftId: Int,
+    @SerialName("gift_name")
+    val giftName: String,
+    @SerialName("gift_num")
+    val giftNum: Int,
+//    @SerialName("send_master")
+//    val sendMaster: Any,
+    @SerialName("uid")
+    val uid: Int,
+    @SerialName("uname")
+    val uname: String
+)
+
+@Serializable
+data class BlindGift(
+    @SerialName("blind_gift_config_id")
+    val blindGiftConfigId: Int,
+    @SerialName("gift_action")
+    val giftAction: String,
+    @SerialName("original_gift_id")
+    val originalGiftId: Int,
+    @SerialName("original_gift_name")
+    val originalGiftName: String
+)
+@Serializable
+data class BatchComboSend(
+    @SerialName("action")
+    val action: String,
+    @SerialName("batch_combo_id")
+    val batchComboId: String?,
+    @SerialName("batch_combo_num")
+    val batchComboNum: Int?,
+    @SerialName("blind_gift")
+    val blindGift: BlindGift?,
     @SerialName("gift_id")
     val giftId: Int,
     @SerialName("gift_name")

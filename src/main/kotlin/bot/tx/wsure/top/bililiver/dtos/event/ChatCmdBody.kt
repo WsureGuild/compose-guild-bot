@@ -3,12 +3,11 @@ import bot.tx.wsure.top.bililiver.enums.NoticeCmd
 import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.modules.SerializersModule
 
 @Serializable
-data class CmdType(
+open class CmdType(
     @SerialName("cmd")
-    val cmd: NoticeCmd
+    open val cmd: NoticeCmd
 )
 @Serializable
 open class ChatCmdBody<T>(

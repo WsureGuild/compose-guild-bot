@@ -15,6 +15,8 @@ enum class NoticeCmd(val description:String ) {
 
     SEND_GIFT("礼物"),
     COMBO_SEND("连击礼物"),
+    GUARD_BUY("舰长"),
+    USER_TOAST_MSG("自动续费舰长"),
     ONLINE_RANK_TOP3("榜上老头变化"),
 
     ANCHOR_LOT_START("天选之人开始完整信息"),
@@ -28,5 +30,19 @@ enum class NoticeCmd(val description:String ) {
     WIDGET_BANNER("小部件横幅"),
     INTERACT_WORD("交互词"),
     LIVE_INTERACTIVE_GAME("交互游戏"),
+
+    HOT_RANK_SETTLEMENT("分类热门"),
+    HOT_RANK_SETTLEMENT_V2("分类热门"),
+    NOTICE_MSG("分区道具抽奖广播样式"),
+    PREPARING("准备"),
+    ROOM_CHANGE("换家了"),
+    LIVE("换家信息"),
+    PK_BATTLE_PROCESS("大乱斗"),
+    PK_BATTLE_PROCESS_NEW("大乱斗"),
+
+    COMMON_NOTICE_DANMAKU("垃圾弹幕"),
+
+    ROOM_BLOCK_MSG("有ban ban"),
+    SUPER_CHAT_MESSAGE_DELETE("SC被夹"),
     ;
 }
