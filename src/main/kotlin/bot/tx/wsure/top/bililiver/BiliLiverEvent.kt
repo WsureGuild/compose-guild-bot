@@ -8,19 +8,39 @@ abstract class BiliLiverEvent(var room: Room) {
     open fun onSuperChatMessage(superChatMessage: SuperChatMessage){
 
     }
-    fun onSendGift(sendGift: SendGift){
+    open fun onSendGift(sendGift: SendGift){
 
     }
 
-    fun onComboSend(comboSend: ComboSend){
+    open fun onComboSend(comboSend: ComboSend){
 
     }
 
-    fun onOnlineRankTop3(onlineRankTop3: OnlineRankTop3){
+    open fun onOnlineRankTop3(onlineRankTop3: OnlineRankTop3){
 
     }
 
-    fun onRoomRealTimeMessageUpdate(roomRealTimeMessageUpdate: RoomRealTimeMessageUpdate){
+    open fun onRoomRealTimeMessageUpdate(roomRealTimeMessageUpdate: RoomRealTimeMessageUpdate){
+
+    }
+
+    open fun onRoomBlockMsg(roomBlockMsg:RoomBlockMsg){
+
+    }
+
+    open fun onSuperChatMessageDelete(superChatMessageDelete:SuperChatMessageDelete){
+
+    }
+
+    open fun onGuardBuy(guardBuy:GuardBuy){
+
+    }
+
+    open fun onHotRankSettlement(hotRankSettlement: HotRankSettlement) {
+
+    }
+
+    open fun onDanmuMsg(danmuMsg: DanmuMsg) {
 
     }
 }

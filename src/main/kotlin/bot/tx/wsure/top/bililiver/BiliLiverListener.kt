@@ -7,9 +7,8 @@ import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.zlib
 import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 import bot.tx.wsure.top.bililiver.dtos.api.token.TokenAndUrl
 import bot.tx.wsure.top.bililiver.dtos.event.*
-import bot.tx.wsure.top.bililiver.dtos.event.cmd.RoomRealTimeMessageUpdate
-import bot.tx.wsure.top.bililiver.dtos.event.cmd.SendGift
-import bot.tx.wsure.top.bililiver.dtos.event.cmd.SuperChatMessage
+import bot.tx.wsure.top.bililiver.dtos.event.cmd.*
+import bot.tx.wsure.top.bililiver.dtos.event.cmd.DanmuMsg.Companion.toDanmuMsg
 import bot.tx.wsure.top.bililiver.enums.NoticeCmd
 import bot.tx.wsure.top.bililiver.enums.Operation
 import bot.tx.wsure.top.bililiver.enums.ProtocolVersion
@@ -123,6 +122,54 @@ class BiliLiverListener(
                     content.jsonToObjectOrNull<ChatCmdBody<RoomRealTimeMessageUpdate>>()?.also { roomRealTimeMessageUpdate ->
                         biliLiverEvents.onEach {
                             it.onRoomRealTimeMessageUpdate(roomRealTimeMessageUpdate.data)
+                        }
+                    }
+                }
+                NoticeCmd.ONLINE_RANK_TOP3 -> {
+                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
+                    content.jsonToObjectOrNull<ChatCmdBody<OnlineRankTop3>>()?.also { onlineRankTop3 ->
+                        biliLiverEvents.onEach {
+                            it.onOnlineRankTop3(onlineRankTop3.data)
+                        }
+                    }
+                }
+                NoticeCmd.GUARD_BUY -> {
+                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
+                    content.jsonToObjectOrNull<ChatCmdBody<GuardBuy>>()?.also { guardBuy ->
+                        biliLiverEvents.onEach {
+                            it.onGuardBuy(guardBuy.data)
+                        }
+                    }
+                }
+                NoticeCmd.ROOM_BLOCK_MSG -> {
+                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
+                    content.jsonToObjectOrNull<ChatCmdBody<RoomBlockMsg>>()?.also { roomBlockMsg ->
+                        biliLiverEvents.onEach {
+                            it.onRoomBlockMsg(roomBlockMsg.data)
+                        }
+                    }
+                }
+                NoticeCmd.SUPER_CHAT_MESSAGE_DELETE -> {
+                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
+                    content.jsonToObjectOrNull<ChatCmdBody<SuperChatMessageDelete>>()?.also { superChatMessageDelete ->
+                        biliLiverEvents.onEach {
+                            it.onSuperChatMessageDelete(superChatMessageDelete.data)
+                        }
+                    }
+                }
+                NoticeCmd.HOT_RANK_SETTLEMENT,NoticeCmd.HOT_RANK_SETTLEMENT_V2 -> {
+                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
+                    content.jsonToObjectOrNull<ChatCmdBody<HotRankSettlement>>()?.also { hotRankSettlement ->
+                        biliLiverEvents.onEach {
+                            it.onHotRankSettlement(hotRankSettlement.data)
+                        }
+                    }
+                }
+                NoticeCmd.DANMU_MSG -> {
+                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
+                    content.toDanmuMsg()?.also { danmuMsg ->
+                        biliLiverEvents.onEach {
+                            it.onDanmuMsg(danmuMsg)
                         }
                     }
                 }

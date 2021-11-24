@@ -11,9 +11,8 @@ data class DanmuMsg(
 ) {
     companion object{
 
-        fun String.toDanmuMsg(){
-
-
+        fun String.toDanmuMsg():DanmuMsg?{
+            return null
         }
     }
 }
