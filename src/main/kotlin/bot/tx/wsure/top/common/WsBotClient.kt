@@ -15,9 +15,9 @@ open class WsBotClient<T:BaseBotListener>(
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
     private val wsClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
-            .readTimeout(3, TimeUnit.SECONDS) //设置读取超时时间
-            .writeTimeout(3, TimeUnit.SECONDS) //设置写的超时时间
-            .connectTimeout(3, TimeUnit.SECONDS) //设置连接超时时间
+            .readTimeout(30, TimeUnit.SECONDS) //设置读取超时时间
+            .writeTimeout(30, TimeUnit.SECONDS) //设置写的超时时间
+            .connectTimeout(30, TimeUnit.SECONDS) //设置连接超时时间
             .build()
     }
     private val wsRequest: Request by lazy { Request.Builder()

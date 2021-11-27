@@ -6,7 +6,7 @@ import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 import bot.tx.wsure.top.component.bililiver.SuperChatNotify
 import bot.tx.wsure.top.component.official.EditRoles
 import bot.tx.wsure.top.component.unofficial.YbbTrain
-import bot.tx.wsure.top.config.Global.token
+import bot.tx.wsure.top.config.Global
 import bot.tx.wsure.top.official.OfficialBotClient
 import bot.tx.wsure.top.plugins.*
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
@@ -37,9 +37,14 @@ fun main() {
             ),
         )
 
+        val ybbConfig = mutableMapOf(
+            36667731636792997 to 1591085L,
+            6000051636714649 to 1560174L,
+        )
+
         val unOfficialBotClient = UnOfficialBotClient(
             listOf(
-                YbbTrain(),
+                YbbTrain(ybbConfig),
 //            SendRoles()
             )
         )
@@ -51,13 +56,16 @@ fun main() {
 
         }
 
-        val botClient = OfficialBotClient(
-            token, listOf(
-                EditRoles(unOfficialBotClient)
+        val officialBotClients = Global.CONFIG.officialBots.map {bot ->
+            val guilds = Global.CONFIG.guilds.filter { bot.guilds.contains(it.name) }
+            OfficialBotClient(
+                bot.botToken(), listOf(
+                    EditRoles(guilds)
+                )
             )
-        )
+        }
 
-        this.attributes.put(AttributeKey("officeBot"), botClient)
+        this.attributes.put(AttributeKey("officeBot"), officialBotClients)
 
     }.start(wait = true)
 

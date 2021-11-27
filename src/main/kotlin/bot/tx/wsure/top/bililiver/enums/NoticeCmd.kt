@@ -31,6 +31,7 @@ enum class NoticeCmd(val description:String ) {
     INTERACT_WORD("交互词"),
     LIVE_INTERACTIVE_GAME("交互游戏"),
 
+    HOT_ROOM_NOTIFY(""),
     HOT_RANK_SETTLEMENT("分类热门"),
     HOT_RANK_SETTLEMENT_V2("分类热门"),
     NOTICE_MSG("分区道具抽奖广播样式"),
@@ -39,10 +40,14 @@ enum class NoticeCmd(val description:String ) {
     LIVE("换家信息"),
     PK_BATTLE_PROCESS("大乱斗"),
     PK_BATTLE_PROCESS_NEW("大乱斗"),
-
+    TRADING_SCORE("交易分数"),
     COMMON_NOTICE_DANMAKU("垃圾弹幕"),
 
     ROOM_BLOCK_MSG("有ban ban"),
     SUPER_CHAT_MESSAGE_DELETE("SC被夹"),
+
+    VOICE_JOIN_LIST(""),
+    VOICE_JOIN_STATUS(""),
+    VOICE_JOIN_ROOM_COUNT_INFO(""),
     ;
 }

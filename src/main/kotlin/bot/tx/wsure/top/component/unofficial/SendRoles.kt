@@ -22,11 +22,11 @@ class SendRoles :UnOfficialBotEvent(){
 
 
     override suspend fun onGuildMessage(sender: UnofficialMessageSender, message: GuildMessage) {
-        val ac = Global.rolesAhoCorasickMatcher
-        val res = ac.search(message.message)
-        if(res.isNotEmpty()){
-            sender.sendMessage(message.toSendGuildChannelMsgAction(OFFICIAL_BOT_ID.toAtCC() + " \n" + message.userId.toAtCC()+ " \n" +res.joinToString(","){ it.id }))
-        }
+//        val ac = Global.rolesAhoCorasickMatcher
+//        val res = ac.search(message.message)
+//        if(res.isNotEmpty()){
+//            sender.sendMessage(message.toSendGuildChannelMsgAction(OFFICIAL_BOT_ID.toAtCC() + " \n" + message.userId.toAtCC()+ " \n" +res.joinToString(","){ it.id }))
+//        }
     }
 
 

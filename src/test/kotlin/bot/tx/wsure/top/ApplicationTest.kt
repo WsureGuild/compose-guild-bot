@@ -58,10 +58,16 @@ class ApplicationTest {
 
     @Test
     fun testEvents(){
-        val type :ChatCmdBody<SuperChatMessage> = "{\"cmd\":\"SUPER_CHAT_MESSAGE\",\"data\":{\"background_bottom_color\":\"#2A60B2\",\"background_color\":\"#EDF5FF\",\"background_color_end\":\"#405D85\",\"background_color_start\":\"#3171D2\",\"background_icon\":\"\",\"background_image\":\"https://i0.hdslb.com/bfs/live/a712efa5c6ebc67bafbe8352d3e74b820a00c13e.png\",\"background_price_color\":\"#7497CD\",\"color_point\":0.7,\"dmscore\":80,\"end_time\":1637586602,\"gift\":{\"gift_id\":12000,\"gift_name\":\"醒目留言\",\"num\":1},\"id\":2677557,\"is_ranked\":1,\"is_send_audit\":0,\"medal_info\":null,\"message\":\"白菜什么时候也能读评论啊\",\"message_font_color\":\"#A3F6FF\",\"message_trans\":\"\",\"price\":30,\"rate\":1000,\"start_time\":1637586542,\"time\":59,\"token\":\"F093618C\",\"trans_mark\":0,\"ts\":1637586543,\"uid\":8434308,\"user_info\":{\"face\":\"http://i0.hdslb.com/bfs/face/875b52c14bfeaceec7292cf64583947314cdaff7.gif\",\"face_frame\":\"\",\"guard_level\":0,\"is_main_vip\":1,\"is_svip\":0,\"is_vip\":0,\"level_color\":\"#5896de\",\"manager\":0,\"name_color\":\"#666666\",\"title\":\"task-year\",\"uname\":\"风行丶星云\",\"user_level\":30}},\"roomid\":21402309}"
-            .jsonToObject()
-        println(type.cmd)
-//        BiliLiverConsole("21452505")
+        val danmuText = "{\"cmd\":\"DANMU_MSG\",\"info\":[[0,1,25,4546550,1637854165951,1830478663,0,\"46095640\",0,0,5,\"#1453BAFF,#4C2263A2,#3353BAFF\",0,\"{}\",\"{}\",{\"mode\":0,\"extra\":\"{\\\"send_from_me\\\":false,\\\"content\\\":\\\"小猪学妹来了？\\\",\\\"mode\\\":0,\\\"font_size\\\":25,\\\"color\\\":4546550,\\\"user_hash\\\":\\\"1175017024\\\",\\\"direction\\\":0,\\\"pk_direction\\\":0}\"}],\"小猪学妹来了？\",[4659548,\"夏眠不知\",0,0,0,10000,1,\"#00D1F1\"],[],[14,0,6406234,\"\\u003e50000\",0],[\"\",\"\"],0,3,null,{\"ts\":1637854165,\"ct\":\"5BC2DE66\"},0,0,null,null,0,105]}"
+        val regex = Regex("(?<=],\").+?(?=\",\\[)").findAll(danmuText).joinToString(""){ it.value }
+        val uid = Regex("(?<=\",\\[)\\d+").findAll(danmuText).joinToString(""){ it.value }
+        val uname = Regex("(?<=\",\\[)\\d+,\".*?(?=\")").findAll(danmuText).joinToString(""){ it.value }
+        val color = Regex("(?<=\"color\\\\\":)\\d+(?=,)").findAll(danmuText).joinToString(""){ it.value }
+        println(regex)
+        println(uid)
+        println(uname.replace(Regex("^.*\""),""))
+        println(color)
+    //        BiliLiverConsole("21452505")
 //        runBlocking { delay(99999999999999) }
     }
 

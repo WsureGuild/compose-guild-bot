@@ -4,21 +4,27 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DanmuMsg(
-    val uname:String,
-    val uid:Long,
     val context:String,
-    val guardInfo:DanmuGuardInfo?,
+    val uid:Long,
+    val uname:String,
+    val color:String,
 ) {
     companion object{
+        val contextRegex = Regex("(?<=],\").+?(?=\",\\[)")
+        val uidRegex = Regex("(?<=\",\\[)\\d+")
+        val unameRegex = Regex("(?<=\",\\[)\\d+,\".*?(?=\")")
+        val colorRegex = Regex("(?<=\"color\\\\\":)\\d+(?=,)")
 
-        fun String.toDanmuMsg():DanmuMsg?{
-            return null
+        fun String.toDanmuMsg():DanmuMsg{
+            return DanmuMsg(
+                contextRegex.findResult(this),
+                uidRegex.findResult(this).toLong(),
+                unameRegex.findResult(this).replace(Regex("^.*\""),""),
+                colorRegex.findResult(this),
+            )
         }
     }
 }
-@Serializable
-data class DanmuGuardInfo(
-    val level:Int,
-    val name:String,
-    val anchorUname:String,
-)
+fun Regex.findResult(str:String):String{
+    return  this.findAll(str).joinToString(""){ it.value }
+}

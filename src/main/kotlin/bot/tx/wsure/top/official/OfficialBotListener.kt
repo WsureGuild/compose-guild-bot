@@ -41,50 +41,48 @@ class OfficialBotListener(
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
-        logger.debug("received message $text")
-        text.jsonToObjectOrNull<Operation>()?.also { opType ->
+        runCatching{
+            logger.debug("received message $text")
+            text.jsonToObjectOrNull<Operation>()?.also { opType ->
 
-            when(opType.type()){
-                OPCodeEnums.Heartbeat_ACK -> {
-                    lastReceivedHeartBeat.getAndSet(System.currentTimeMillis())
-                }
-                //首次连接 发送Identify信息鉴权
-                OPCodeEnums.Heartbeat_Config -> {
-                    // 初始化操作
-                    initConnection(webSocket)
-                }
-                //收到事件
-                OPCodeEnums.Dispatch -> {
-                    text.jsonToObjectOrNull<DispatchDto>()?.also { dispatchDto ->
-                        messageCount.getAndSet(dispatchDto.s)
-                        when(dispatchDto.type){
-                            DispatchEnums.AT_MESSAGE_CREATE -> {
-                                text.jsonToObjectOrNull<AtMessageCreateEvent>()?.also { guildAtMessage ->
-                                    logger.debug("received AT_MESSAGE_CREATE ${guildAtMessage.objectToJson()}")
-                                    officialEvents.forEach { runBlocking { it.onAtMessageCreate(guildAtMessage) } }
+                when(opType.type()){
+                    OPCodeEnums.Heartbeat_ACK -> {
+                        lastReceivedHeartBeat.getAndSet(System.currentTimeMillis())
+                    }
+                    //首次连接 发送Identify信息鉴权
+                    OPCodeEnums.Heartbeat_Config -> {
+                        // 初始化操作
+                        initConnection(webSocket)
+                    }
+                    //收到事件
+                    OPCodeEnums.Dispatch -> {
+                        text.jsonToObjectOrNull<DispatchDto>()?.also { dispatchDto ->
+                            messageCount.getAndSet(dispatchDto.s)
+                            when(dispatchDto.type){
+                                DispatchEnums.AT_MESSAGE_CREATE -> {
+                                    text.jsonToObjectOrNull<AtMessageCreateEvent>()?.also { guildAtMessage ->
+                                        logger.info("received AT_MESSAGE_CREATE ${guildAtMessage.objectToJson()}")
+                                        officialEvents.forEach { runBlocking { it.onAtMessageCreate(guildAtMessage) } }
+                                    }
                                 }
                             }
-
                         }
                     }
+                    OPCodeEnums.Reconnect -> {
+                        logger.warn("need reconnect !!")
+                        reconnectClient()
+                    }
+                    OPCodeEnums.Invalid_Session -> {
+                        webSocket.cancel()
+                        hbTimer?.cancel()
+                        logger.error(OPCodeEnums.Invalid_Session.description)
+                        throw RuntimeException(OPCodeEnums.Invalid_Session.description)
+                    }
                 }
-                OPCodeEnums.Reconnect -> {
-                    logger.warn("need reconnect !!")
-                    reconnectClient()
-                }
-                OPCodeEnums.Invalid_Session -> {
-                    webSocket.cancel()
-                    hbTimer?.cancel()
-                    logger.error(OPCodeEnums.Invalid_Session.description)
-                    throw RuntimeException(OPCodeEnums.Invalid_Session.description)
-                }
-
             }
+        }.onFailure {
+            it.printStackTrace()
         }
-
-
-
-
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {

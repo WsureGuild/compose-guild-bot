@@ -17,7 +17,7 @@ class SuperChatNotify(val config:List<Pair<Long,Long>>, room: Room, val sender: 
 
     override fun onSuperChatMessage(superChatMessage: SuperChatMessage){
         logger.info("Room :{} ,SC content:{},",room.objectToJson(),superChatMessage.objectToJson())
-        val msg = " - - - - - \n「`${room.uname}`收到了`${superChatMessage.userInfo.uname}`发送了${superChatMessage.price}块 SC:`${superChatMessage.message}`」"
+        val msg = " - $ $ $ - \n「`${room.uname}`收到了`${superChatMessage.userInfo.uname}`发送了${superChatMessage.price}块 SC:`${superChatMessage.message}`」"
         config.onEach {
             sender.sendMessage(unofficialGuildMessage(msg,it).objectToJson())
         }
@@ -25,7 +25,7 @@ class SuperChatNotify(val config:List<Pair<Long,Long>>, room: Room, val sender: 
 
     override fun onRoomBlockMsg(roomBlockMsg: RoomBlockMsg){
         logger.info("Room :{} ,有ban ban content:{},",room.objectToJson(),roomBlockMsg.objectToJson())
-        val msg = "${roomBlockMsg.uname}(uid:${roomBlockMsg.uid})在主播`${room.uname}`的直播间被ban,恭喜恭喜"
+        val msg = " - # # # - \n「恭喜`${roomBlockMsg.uname}`(uid:${roomBlockMsg.uid})在主播`${room.uname}`的直播间被ban」"
         config.onEach {
             sender.sendMessage(unofficialGuildMessage(msg,it).objectToJson())
         }

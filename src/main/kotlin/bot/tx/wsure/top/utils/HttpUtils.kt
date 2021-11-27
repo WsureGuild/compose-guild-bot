@@ -21,30 +21,6 @@ object HttpUtils {
                 logger.warn("Call url {} by get method failure !!",this,it)
             }.getOrNull()
     }
-
-    suspend inline fun <reified T> String.officialApiGet():T?{
-        return kotlin.runCatching { Global.httpClient.get<T>(this){
-            header("Authorization",Global.token)
-        } }.onFailure {
-            logger.warn("Call url {} by get method failure !!",this,it)
-        }.getOrNull()
-    }
-
-    suspend inline fun <reified T> String.officialApiPut():T?{
-        return kotlin.runCatching { Global.httpClient.put<T>(this){
-            header("Authorization",Global.token)
-        } }.onFailure {
-            logger.warn("Call url {} by put method failure !!",this,it)
-        }.getOrNull()
-    }
-
-    suspend inline fun <reified T> String.officialApiDelete():T?{
-        return kotlin.runCatching { Global.httpClient.delete<T>(this){
-            header("Authorization",Global.token)
-        } }.onFailure {
-            logger.warn("Call url {} by delete method failure !!",this,it)
-        }.getOrNull()
-    }
 }
 /*
 No transformation found: class io.ktor.utils.io.ByteBufferChannel -> class bot.tx.wsure.top.Dtos.RolesApiRes

@@ -35,13 +35,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
     implementation("com.h2database:h2:1.4.200")
-
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-
     implementation("org.jetbrains.exposed:exposed-jodatime:$exposedVersion")
 
     implementation("com.aayushatharva.brotli4j:brotli4j:$brotliVersion")

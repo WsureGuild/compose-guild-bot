@@ -27,8 +27,8 @@ class BiliLiverListener(
     val room: Room,
     val tokenAndUrl: TokenAndUrl,
     val biliLiverEvents: List<BiliLiverEvent>,
-    private val heartbeatDelay: Long = 30000,
-    private val reconnectTimeout: Long = 60000,
+    private val heartbeatDelay: Long = 25000,
+    private val reconnectTimeout: Long = 50000,
 ) : BaseBotListener() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
@@ -45,34 +45,38 @@ class BiliLiverListener(
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        logger.debug("$logHeader onMessage ,context:${bytes.hex() }")
-        val originPkg = bytes.toChatPackage()
-        val pkgList = mutableListOf<ChatPackage>()
-        when(originPkg.protocolVersion){
-            ProtocolVersion.INT,ProtocolVersion.JSON -> pkgList.add(originPkg)
-            ProtocolVersion.ZLIB_INFLATE -> pkgList.addAll(originPkg.body.zlib().toChatPackageList())
-            ProtocolVersion.BROTLI -> pkgList.addAll(originPkg.body.brotli().toChatPackageList())
-            else -> {
-                logger.warn("onMessage : unknown Message  ,context:${bytes.hex() }")
-                return
-            }
-        }
-        pkgList.onEach { pkg ->
-            logger.debug("$logHeader onMessage ${pkg.protocolVersion},${pkg.operation} ,context:${ pkg.content() }")
-            when(pkg.operation){
-                Operation.HELLO_ACK -> {
-                    initHeartbeat(webSocket)
-                }
-                Operation.HEARTBEAT_ACK -> {
-                    receivedHeartbeat()
-                }
-                Operation.NOTICE -> {
-                    onNotice(pkg)
-                }
+        kotlin.runCatching{
+            logger.debug("$logHeader onMessage ,context:${bytes.hex() }")
+            val originPkg = bytes.toChatPackage()
+            val pkgList = mutableListOf<ChatPackage>()
+            when(originPkg.protocolVersion){
+                ProtocolVersion.INT,ProtocolVersion.JSON -> pkgList.add(originPkg)
+                ProtocolVersion.ZLIB_INFLATE -> pkgList.addAll(originPkg.body.zlib().toChatPackageList())
+                ProtocolVersion.BROTLI -> pkgList.addAll(originPkg.body.brotli().toChatPackageList())
                 else -> {
-                    logger.debug("$logHeader unhandled operation")
+                    logger.warn("onMessage : unknown Message  ,context:${bytes.hex() }")
+                    return
                 }
             }
+            pkgList.onEach { pkg ->
+                logger.debug("$logHeader onMessage ${pkg.protocolVersion},${pkg.operation} ,context:${ pkg.content() }")
+                when(pkg.operation){
+                    Operation.HELLO_ACK -> {
+                        initHeartbeat(webSocket)
+                    }
+                    Operation.HEARTBEAT_ACK -> {
+                        receivedHeartbeat(pkg.content())
+                    }
+                    Operation.NOTICE -> {
+                        onNotice(pkg)
+                    }
+                    else -> {
+                        logger.warn("$logHeader unhandled operation,${pkg.content()}")
+                    }
+                }
+            }
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 
@@ -99,10 +103,9 @@ class BiliLiverListener(
         val content = pkg.content()
 
         content.jsonToObjectOrNull<CmdType>()?.also { type ->
-
+            logger.info("$logHeader received ${type.cmd.description} :{}",content)
             when(type.cmd){
                 NoticeCmd.SUPER_CHAT_MESSAGE -> {
-                    logger.info("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<SuperChatMessage>>()?.also { superChat ->
                         biliLiverEvents.onEach {
                             it.onSuperChatMessage(superChat.data)
@@ -110,7 +113,6 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.SEND_GIFT -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<SendGift>>()?.also { sendGift ->
                         biliLiverEvents.onEach {
                             it.onSendGift(sendGift.data)
@@ -118,7 +120,6 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.ROOM_REAL_TIME_MESSAGE_UPDATE -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<RoomRealTimeMessageUpdate>>()?.also { roomRealTimeMessageUpdate ->
                         biliLiverEvents.onEach {
                             it.onRoomRealTimeMessageUpdate(roomRealTimeMessageUpdate.data)
@@ -126,7 +127,6 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.ONLINE_RANK_TOP3 -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<OnlineRankTop3>>()?.also { onlineRankTop3 ->
                         biliLiverEvents.onEach {
                             it.onOnlineRankTop3(onlineRankTop3.data)
@@ -134,7 +134,6 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.GUARD_BUY -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<GuardBuy>>()?.also { guardBuy ->
                         biliLiverEvents.onEach {
                             it.onGuardBuy(guardBuy.data)
@@ -142,7 +141,6 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.ROOM_BLOCK_MSG -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<RoomBlockMsg>>()?.also { roomBlockMsg ->
                         biliLiverEvents.onEach {
                             it.onRoomBlockMsg(roomBlockMsg.data)
@@ -150,7 +148,6 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.SUPER_CHAT_MESSAGE_DELETE -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<SuperChatMessageDelete>>()?.also { superChatMessageDelete ->
                         biliLiverEvents.onEach {
                             it.onSuperChatMessageDelete(superChatMessageDelete.data)
@@ -158,7 +155,6 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.HOT_RANK_SETTLEMENT,NoticeCmd.HOT_RANK_SETTLEMENT_V2 -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
                     content.jsonToObjectOrNull<ChatCmdBody<HotRankSettlement>>()?.also { hotRankSettlement ->
                         biliLiverEvents.onEach {
                             it.onHotRankSettlement(hotRankSettlement.data)
@@ -166,8 +162,7 @@ class BiliLiverListener(
                     }
                 }
                 NoticeCmd.DANMU_MSG -> {
-                    logger.debug("$logHeader received ${type.cmd.description} :{}",content)
-                    content.toDanmuMsg()?.also { danmuMsg ->
+                    content.toDanmuMsg().also { danmuMsg ->
                         biliLiverEvents.onEach {
                             it.onDanmuMsg(danmuMsg)
                         }
@@ -186,7 +181,8 @@ class BiliLiverListener(
         hbTimer = ScheduleUtils.loopEvent(processor,Date(),heartbeatDelay)
     }
 
-    private fun receivedHeartbeat() {
+    private fun receivedHeartbeat(content:String) {
+        logger.info("$logHeader received heartbeat $content")
         lastReceivedHeartBeat.getAndSet(System.currentTimeMillis())
     }
 
@@ -198,7 +194,6 @@ class BiliLiverListener(
                 logger.warn("$logHeader heartbeat timeout , try to reconnect")
                 reconnectClient()
             } else {
-
                 webSocket.sendAndPrintLog(HeartbeatPackage,true)
 
             }
@@ -208,7 +203,7 @@ class BiliLiverListener(
 
     private fun WebSocket.sendAndPrintLog(pkg: ChatPackage, isHeartbeat:Boolean = false){
         if(isHeartbeat){
-            logger.debug("$logHeader send Heartbeat ${pkg.content()}")
+            logger.info("$logHeader send Heartbeat ${pkg.content()}")
         } else {
             logger.info("$logHeader send text message ${pkg.content()}")
         }

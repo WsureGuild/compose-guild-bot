@@ -46,28 +46,31 @@ class UnOfficialBotListener(
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
-        stopRetryReconnect()
-        logger.debug("received message $text")
-        text.jsonToObjectOrNull<BaseEventDto>(false)?.also { event->
-            when (event.postType){
-                PostTypeEnum.MESSAGE -> {
-                    text.jsonToObjectOrNull<MessageEvent>()?.also { message ->
-                        when(message.messageType){
-                            MessageTypeEnums.GUILD -> {
-                                text.jsonToObjectOrNull<GuildMessage>()?.also { guildMessage ->
-                                    logger.debug("received GUILD_MESSAGE $text")
-                                    officialEvents.onEach { runBlocking { it.onGuildMessage(UnofficialMessageSender(webSocket),guildMessage) } }
+        kotlin.runCatching {
+            stopRetryReconnect()
+            logger.debug("received message $text")
+            text.jsonToObjectOrNull<BaseEventDto>(false)?.also { event->
+                when (event.postType){
+                    PostTypeEnum.MESSAGE -> {
+                        text.jsonToObjectOrNull<MessageEvent>()?.also { message ->
+                            when(message.messageType){
+                                MessageTypeEnums.GUILD -> {
+                                    text.jsonToObjectOrNull<GuildMessage>()?.also { guildMessage ->
+                                        logger.debug("received GUILD_MESSAGE $text")
+                                        officialEvents.onEach { runBlocking { it.onGuildMessage(UnofficialMessageSender(webSocket),guildMessage) } }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                PostTypeEnum.NOTICE -> {
+                    PostTypeEnum.NOTICE -> {
 
+                    }
                 }
             }
+        }.onFailure {
+            it.printStackTrace()
         }
-
     }
 
 
