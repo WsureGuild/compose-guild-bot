@@ -18,7 +18,7 @@
       "name": "开发频道1",
       "id": "1231231231123212",
       "channels": {
-        "devTest": "channels是个map，根据仔细需要配置k，v",
+        "devTest": "channels是个map，根据自己需要配置k，v",
         "sendRoles": "11330123594"
       },
       "botName": "名称1"
