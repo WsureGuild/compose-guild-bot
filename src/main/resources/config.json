@@ -1,14 +1,36 @@
 {
-  "weiboCookie": "你的微博cookie 手机版的",
-  "officialBot": {
-    "id": 111111111,
-    "token": " 官方bot token (控制台查看) "
-  },
-  "devGuild": {
-    "id" : "官方bot所绑定开发频道，请在websocket消息中拿",
-    "channels" : {
-      "devTest" : "测试使用的channelId，Channels 是map，可以自己配置key value",
-      "sendRoles" : "1330594"
+  "weiboCookie": "你的微博token mobile的",
+  "officialBots": [
+    {
+      "name": "名称1",
+      "id": 12345561,
+      "token": "你的bottoken",
+      "guilds": ["开发频道1"]
+    },{
+      "name": "名称2",
+      "id": 12345562,
+      "token": "你的bottoken",
+      "guilds": ["开发频道2"]
     }
-  }
+  ],
+  "guilds": [
+    {
+      "name": "开发频道1",
+      "id": "1231231231123212",
+      "channels": {
+        "devTest": "channels是个map，根据仔细需要配置k，v",
+        "sendRoles": "11330123594"
+      },
+      "botName": "名称1"
+    },
+    {
+      "name": "开发频道2",
+      "id": "132132321323",
+      "channels": {
+        "devTest": "channels是个map，根据仔细需要配置k，v",
+        "sendRoles": "1379481"
+      },
+      "botName": "名称2"
+    }
+  ]
 }

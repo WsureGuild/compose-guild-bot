@@ -1,7 +1,7 @@
 package bot.tx.wsure.top.official.dtos.event
-import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Serializable
