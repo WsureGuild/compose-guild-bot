@@ -1,10 +1,10 @@
 package bot.tx.wsure.top.unofficial.dtos.event.notice
+
 import bot.tx.wsure.top.unofficial.dtos.event.BaseEventDto
 import bot.tx.wsure.top.unofficial.dtos.event.BaseEventInterface
 import bot.tx.wsure.top.unofficial.enums.PostTypeEnum
-import kotlinx.serialization.Serializable
-
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Serializable

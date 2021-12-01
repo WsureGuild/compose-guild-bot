@@ -4,10 +4,7 @@ import bot.tx.wsure.top.bililiver.BiliLiverConsole
 import bot.tx.wsure.top.bililiver.BiliLiverEvent
 import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 import bot.tx.wsure.top.component.bililiver.SuperChatNotify
-import bot.tx.wsure.top.component.official.EditRoles
 import bot.tx.wsure.top.component.unofficial.YbbTrain
-import bot.tx.wsure.top.config.Global
-import bot.tx.wsure.top.official.OfficialBotClient
 import bot.tx.wsure.top.plugins.*
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import io.ktor.server.engine.*
@@ -55,17 +52,6 @@ fun main() {
             }
 
         }
-
-        val officialBotClients = Global.CONFIG.officialBots.map {bot ->
-            val guilds = Global.CONFIG.guilds.filter { bot.guilds.contains(it.name) }
-            OfficialBotClient(
-                bot.botToken(), listOf(
-                    EditRoles(guilds)
-                )
-            )
-        }
-
-        this.attributes.put(AttributeKey("officeBot"), officialBotClients)
 
     }.start(wait = true)
 

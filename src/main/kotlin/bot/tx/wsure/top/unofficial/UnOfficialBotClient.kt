@@ -1,7 +1,6 @@
 package bot.tx.wsure.top.unofficial
 
 import bot.tx.wsure.top.common.WsBotClient
-import bot.tx.wsure.top.official.intf.OfficialBotEvent
 import bot.tx.wsure.top.unofficial.intf.UnOfficialBotEvent
 
 class UnOfficialBotClient(

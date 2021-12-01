@@ -1,7 +1,7 @@
 package bot.tx.wsure.top.bililiver.dtos.api.token
-import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Serializable

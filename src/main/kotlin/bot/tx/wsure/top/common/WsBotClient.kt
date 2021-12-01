@@ -1,7 +1,6 @@
 package bot.tx.wsure.top.common
 
 import bot.tx.wsure.top.utils.UA
-import io.ktor.util.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.slf4j.Logger

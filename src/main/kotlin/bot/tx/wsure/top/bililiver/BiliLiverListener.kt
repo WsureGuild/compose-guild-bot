@@ -45,6 +45,7 @@ class BiliLiverListener(
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+        stopRetryReconnect()
         kotlin.runCatching{
             logger.debug("$logHeader onMessage ,context:${bytes.hex() }")
             val originPkg = bytes.toChatPackage()
@@ -82,7 +83,7 @@ class BiliLiverListener(
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         logger.error("$logHeader onClosing , try to reconnect code:{} reason:{},",code,reason)
-        reconnectClient()
+        startRetryReconnect()
     }
 
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
@@ -91,13 +92,9 @@ class BiliLiverListener(
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         logger.error("$logHeader onFailure , try to reconnect",t)
-        reconnectClient()
+        startRetryReconnect()
     }
 
-    private fun reconnectClient() {
-        hbTimer?.cancel()
-        reconnect()
-    }
 
     private fun onNotice(pkg: ChatPackage) {
         val content = pkg.content()
@@ -180,6 +177,11 @@ class BiliLiverListener(
         // 启动新的心跳
         hbTimer = ScheduleUtils.loopEvent(processor,Date(),heartbeatDelay)
     }
+    override fun cancel(){
+        super.cancel()
+        // do something cancel heartbeat
+        hbTimer?.cancel()
+    }
 
     private fun receivedHeartbeat(content:String) {
         logger.info("$logHeader received heartbeat $content")
@@ -192,7 +194,7 @@ class BiliLiverListener(
             val now = System.currentTimeMillis()
             if( now - last > reconnectTimeout){
                 logger.warn("$logHeader heartbeat timeout , try to reconnect")
-                reconnectClient()
+                startRetryReconnect()
             } else {
                 webSocket.sendAndPrintLog(HeartbeatPackage,true)
 

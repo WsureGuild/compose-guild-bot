@@ -1,14 +1,6 @@
 package bot.tx.wsure.top.unofficial
 
 import bot.tx.wsure.top.common.BaseBotListener
-import bot.tx.wsure.top.official.dtos.DispatchDto
-import bot.tx.wsure.top.official.dtos.DispatchEnums
-import bot.tx.wsure.top.official.dtos.IdentifyOpDto
-import bot.tx.wsure.top.official.dtos.event.AtMessageCreateEvent
-import bot.tx.wsure.top.official.dtos.operation.HeartbeatDto
-import bot.tx.wsure.top.official.dtos.operation.Operation
-import bot.tx.wsure.top.official.enums.OPCodeEnums
-import bot.tx.wsure.top.official.intf.OfficialBotEvent
 import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
 import bot.tx.wsure.top.unofficial.dtos.event.BaseEventDto
 import bot.tx.wsure.top.unofficial.dtos.event.message.GuildMessage
@@ -19,15 +11,13 @@ import bot.tx.wsure.top.unofficial.intf.UnOfficialBotEvent
 import bot.tx.wsure.top.utils.JsonUtils.jsonToObjectOrNull
 import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import bot.tx.wsure.top.utils.ScheduleUtils
-import kotlinx.coroutines.*
-import kotlinx.serialization.Serializable
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import okhttp3.Response
 import okhttp3.WebSocket
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.awt.SystemColor.text
 import java.util.*
-import java.util.concurrent.atomic.AtomicLong
 
 
 class UnOfficialBotListener(
@@ -35,12 +25,6 @@ class UnOfficialBotListener(
 ): BaseBotListener() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    private var retryTimer:Timer? = null
-
-    val retryTask:suspend ()-> Unit = suspend {
-        logger.warn(" try to reconnect ")
-        reconnect()
-    }
     override fun onOpen(webSocket: WebSocket, response: Response) {
         logger.info("onOpen ")
     }
@@ -73,7 +57,6 @@ class UnOfficialBotListener(
         }
     }
 
-
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         logger.warn("onClosing code:$code reason:$reason")
     }
@@ -89,22 +72,6 @@ class UnOfficialBotListener(
         startRetryReconnect()
     }
 
-    private fun startRetryReconnect() {
-        if(retryTimer == null ){
-            logger.info("start retry reconnect")
-            retryTimer = ScheduleUtils.loopEvent(retryTask,Date(),3000)
-        }
-    }
-
-    private fun stopRetryReconnect() {
-        if(retryTimer != null){
-            logger.info("stop retry reconnect")
-            retryTimer?.cancel()
-            retryTimer = null
-        }
-
-    }
-
     private fun WebSocket.sendAndPrintLog(text: String, isHeartbeat:Boolean = false){
         if(isHeartbeat){
             logger.debug("send Heartbeat $text")
@@ -114,6 +81,10 @@ class UnOfficialBotListener(
         this.send(text)
     }
 
+    override fun cancel(){
+        super.cancel()
+        // do something cancel heartbeat
+    }
 
 }
 class UnofficialMessageSender(val webSocket: WebSocket){

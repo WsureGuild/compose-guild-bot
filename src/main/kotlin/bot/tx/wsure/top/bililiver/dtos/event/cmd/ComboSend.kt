@@ -1,8 +1,8 @@
 package bot.tx.wsure.top.bililiver.dtos.event.cmd
-import bot.tx.wsure.top.bililiver.dtos.event.MedalInfo
-import kotlinx.serialization.Serializable
 
+import bot.tx.wsure.top.bililiver.dtos.event.MedalInfo
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 @Serializable

@@ -1,7 +1,7 @@
 package bot.tx.wsure.top.unofficial.dtos.event.message
 
-import bot.tx.wsure.top.unofficial.dtos.event.BaseEventInterface
 import bot.tx.wsure.top.unofficial.dtos.Sender
+import bot.tx.wsure.top.unofficial.dtos.event.BaseEventInterface
 import bot.tx.wsure.top.unofficial.enums.MessageTypeEnums
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,8 +1,8 @@
 package bot.tx.wsure.top.bililiver.dtos.event
-import bot.tx.wsure.top.bililiver.enums.NoticeCmd
-import kotlinx.serialization.Serializable
 
+import bot.tx.wsure.top.bililiver.enums.NoticeCmd
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 open class CmdType(

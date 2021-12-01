@@ -1,7 +1,6 @@
 package bot.tx.wsure.top.bililiver.dtos.event
 
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.brotli
-import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.readUInt32BE
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.write
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.writeInt32BE

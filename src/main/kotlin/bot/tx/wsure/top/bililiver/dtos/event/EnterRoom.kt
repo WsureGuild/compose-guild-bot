@@ -1,11 +1,10 @@
 package bot.tx.wsure.top.bililiver.dtos.event
+
 import bot.tx.wsure.top.bililiver.enums.Operation
 import bot.tx.wsure.top.bililiver.enums.ProtocolVersion
 import bot.tx.wsure.top.utils.JsonUtils.objectToJson
-import kotlinx.serialization.Serializable
-
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Transient
+import kotlinx.serialization.Serializable
 
 
 @Serializable
