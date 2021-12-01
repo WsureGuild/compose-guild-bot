@@ -1,0 +1,27 @@
+{
+  "weiboCookie": "",
+  "superChatConfig" : [
+    {
+      "roomId": "21452505",
+      "guildId": 6000051636714649,
+      "channelId": 1370732
+    },{
+      "roomId": "510",
+      "guildId": 36667731636792997,
+      "channelId": 1365148
+    },{
+      "roomId": "605",
+      "guildId": 19995411637241900,
+      "channelId": 1542326
+    }
+  ],
+  "ybbTranConfig": [
+    {
+      "guildId": 36667731636792997,
+      "channelId": 1591085
+    },{
+      "guildId": 6000051636714649,
+      "channelId": 1560174
+    }
+  ]
+}

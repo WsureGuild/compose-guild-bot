@@ -5,8 +5,14 @@ import bot.tx.wsure.top.bililiver.BiliLiverEvent
 import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 import bot.tx.wsure.top.component.bililiver.SuperChatNotify
 import bot.tx.wsure.top.component.unofficial.YbbTrain
+import bot.tx.wsure.top.config.Config
+import bot.tx.wsure.top.config.Global.CONFIG_PATH
+import bot.tx.wsure.top.config.SuperChatConfig
 import bot.tx.wsure.top.plugins.*
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
+import bot.tx.wsure.top.utils.FileUtils
+import bot.tx.wsure.top.utils.FileUtils.readFileJson
+import bot.tx.wsure.top.utils.FileUtils.readResourceJson
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.util.*
@@ -14,6 +20,9 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @OptIn(InternalAPI::class, InternalCoroutinesApi::class)
 fun main() {
+    FileUtils.copyResource(CONFIG_PATH)
+    bootBot()
+    /*
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
         configureRouting()
         configureSecurity()
@@ -22,46 +31,43 @@ fun main() {
         configureSerialization()
         configureSockets()
 
-        val scConfig = mutableMapOf<String, List<Pair<Long, Long>>>(
-            "21452505" to listOf(
-                6000051636714649 to 1370732,// 七海 七海频道直播讨论子频
-            ),
-            "510" to listOf(
-                36667731636792997 to 1365148,// 阿梓 阿梓 直播讨论
-            ),
-            "605" to listOf(
-                19995411637241900 to 1542326, // 小可 小可 直播机器人频
-            ),
-        )
 
-        val ybbConfig = mutableMapOf(
-            36667731636792997 to 1591085L,
-            6000051636714649 to 1560174L,
-        )
-
-        val unOfficialBotClient = UnOfficialBotClient(
-            listOf(
-                YbbTrain(ybbConfig),
-//            SendRoles()
-            )
-        )
-        val useBL = true
-        if (useBL) {
-            scConfig.onEach { room ->
-                BiliLiverConsole(room.key) { initBiliLiverEvents(it, unOfficialBotClient, room.value) }
-            }
-
-        }
 
     }.start(wait = true)
+     */
 
+}
 
+fun bootBot(){
+    val config : Config = initConfig()
+
+    val unOfficialBotClient = UnOfficialBotClient(
+        listOf(
+            YbbTrain(config.toYbbConfig()),
+        )
+    )
+    val useBL = true
+    if (useBL) {
+        config.toScConfig().onEach { room ->
+            BiliLiverConsole(room.key) { initBiliLiverEvents(it, unOfficialBotClient, room.value) }
+        }
+
+    }
+}
+
+fun initConfig(): Config {
+
+    return CONFIG_PATH.readFileJson<Config>()?.also {
+        println(" 读取配置成功！ ")
+    }?: CONFIG_PATH.readResourceJson<Config>()?.also {
+        println(" 读取配置失败，使用默认配置 ")
+    }?: throw Exception(" 读取配置失败，无法启动")
 }
 
 fun initBiliLiverEvents(
     room: Room,
     unOfficialBotClient: UnOfficialBotClient,
-    guildAndChannel: List<Pair<Long, Long>>
+    guildAndChannel: List<SuperChatConfig>
 ): List<BiliLiverEvent> {
     return mutableListOf(
         SuperChatNotify(guildAndChannel, room, unOfficialBotClient)
