@@ -1,0 +1,18 @@
+{
+  "id": "10fcb5541a1231343431313532313836373930383836373420801e280030b6ab900338cf0740a90248b6cd828d0650b1acf8fa05",
+  "channel_id": "1383164",
+  "guild_id": "4832751538104022242",
+  "content": "FFFFFFFFFFFFFFFFFFF",
+  "timestamp": "2021-11-26T17:19:49+08:00",
+  "tts": false,
+  "mention_everyone": false,
+  "author": {
+    "id": "12425520110028395865",
+    "username": "",
+    "avatar": "",
+    "bot": true
+  },
+  "pinned": false,
+  "type": 0,
+  "flags": 0
+}

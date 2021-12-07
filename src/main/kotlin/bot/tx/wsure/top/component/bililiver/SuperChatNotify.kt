@@ -13,7 +13,7 @@ import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class SuperChatNotify(val config:List<SuperChatConfig>, room: Room, val sender: UnOfficialBotClient): BiliLiverEvent(room) {
+class SuperChatNotify(val config:List<SuperChatConfig>, val sender: UnOfficialBotClient): BiliLiverEvent() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun onSuperChatMessage(superChatMessage: SuperChatMessage){

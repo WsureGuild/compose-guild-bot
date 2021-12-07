@@ -4,33 +4,26 @@ import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.brotli
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
 import bot.tx.wsure.top.bililiver.BiliLiverConsole
-import bot.tx.wsure.top.bililiver.dtos.event.ChatCmdBody
-import bot.tx.wsure.top.bililiver.dtos.event.CmdType
-import bot.tx.wsure.top.bililiver.dtos.event.cmd.SuperChatMessage
-import io.ktor.http.*
-import kotlin.test.*
-import io.ktor.server.testing.*
-import bot.tx.wsure.top.plugins.*
-import bot.tx.wsure.top.utils.JsonUtils.jsonToObject
+import bot.tx.wsure.top.config.Global.CACHE_PATH
+import bot.tx.wsure.top.utils.EhcacheManager
+import bot.tx.wsure.top.utils.FileUtils
 import bot.tx.wsure.top.utils.WeiBoUtils
+import io.ktor.http.*
+import io.ktor.server.testing.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.decodeHex
+import org.mapdb.DB
+import org.mapdb.DBMaker
+import kotlin.io.path.Path
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ApplicationTest {
-    @Test
-    fun testRoot() {
-        withTestApplication({ configureRouting() }) {
-            handleRequest(HttpMethod.Get, "/").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Hello World!", response.content)
-            }
-        }
-    }
 
     @Test
     fun testJson() = runBlocking {
-        val roles =  WeiBoUtils.getMLogByUid(7198559139L)
+        val roles =  WeiBoUtils.getMLogByUid(7198559139L,"")
         println(roles)
     }
 
@@ -71,5 +64,27 @@ class ApplicationTest {
 //        runBlocking { delay(99999999999999) }
     }
 
+    @Test
+    fun testRetry(){
+//        println("欢迎 \\u003c%Nana5mi%\\u003e 进入直播间".replace("欢迎 \\u003c%","").replace("%\\u003e 进入直播间",""))
+//        val welcome = Welcome()
+//        BiliLiverConsole("10339464",listOf(welcome))
+        val dbFile = Path(CACHE_PATH).toFile()
+        FileUtils.createFileAndDirectory(dbFile)
+        val db: DB = DBMaker.fileDB(dbFile)
+            .fileMmapEnable()
+            .closeOnJvmShutdown()
+            .make()
+        val map = DB.HashMapMaker<String, String>(db, "map").createOrOpen()
+        map["asdas"] = "adssadas"
 
+        println(map["asdas1"])
+    }
+
+
+    @Test
+    fun testEhcache(){
+        EhcacheManager.ybb.put("AA", mutableMapOf("1" to 1L))
+        println( EhcacheManager.ybb.get("AA").entries.joinToString { it.key + " :  " +it.value })
+    }
 }

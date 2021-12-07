@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class NoticeCmd(val description:String ) {
     DANMU_MSG("弹幕消息"),
-    ENTRY_EFFECT("欢迎舰长进入房间"),
+    ENTRY_EFFECT("进入房间"),
     SUPER_CHAT_MESSAGE("SC"),
     SUPER_CHAT_MESSAGE_JPN("SC罕见"),
 

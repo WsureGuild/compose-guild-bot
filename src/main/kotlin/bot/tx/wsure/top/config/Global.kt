@@ -10,6 +10,7 @@ import io.ktor.http.*
 
 object Global {
     const val CONFIG_PATH = "config/config.json"
+    const val CACHE_PATH = "cache/file.db"
     val httpClient:HttpClient = HttpClient(CIO){
         install(JsonFeature){
             acceptContentTypes = acceptContentTypes + ContentType("text","plain")

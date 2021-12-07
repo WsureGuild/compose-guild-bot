@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 
-abstract class BaseBotListener(val retryTime:Long = 1000,val retryWait:Long = 3000) : WebSocketListener() {
+abstract class BaseBotListener(private val retryTime:Long = 1000, private val retryWait:Long = 3000) : WebSocketListener() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
      lateinit var reconnect :()->Unit
     private val retryCount = AtomicLong(0)
@@ -15,9 +15,12 @@ abstract class BaseBotListener(val retryTime:Long = 1000,val retryWait:Long = 30
 
     private val retryTask:suspend ()-> Unit = suspend {
         retryCount.getAndIncrement()
-        if(retryCount.get() > retryTime) cancel()
-        logger.warn(" try to reconnect ")
-        reconnect()
+        if(retryCount.get() > retryTime){
+            cancel()
+        }  else {
+            logger.warn(" try to reconnect ")
+            reconnect()
+        }
     }
 
     fun reconnect(func:()->Unit){

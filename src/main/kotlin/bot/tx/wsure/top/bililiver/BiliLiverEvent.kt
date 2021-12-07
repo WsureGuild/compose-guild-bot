@@ -3,7 +3,9 @@ package bot.tx.wsure.top.bililiver
 import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 import bot.tx.wsure.top.bililiver.dtos.event.cmd.*
 
-abstract class BiliLiverEvent(var room: Room) {
+abstract class BiliLiverEvent {
+
+    lateinit var room: Room
 
     open fun onSuperChatMessage(superChatMessage: SuperChatMessage){
 
@@ -41,6 +43,14 @@ abstract class BiliLiverEvent(var room: Room) {
     }
 
     open fun onDanmuMsg(danmuMsg: DanmuMsg) {
+
+    }
+
+    open fun onInteractWord(interactWord: InteractWord) {
+
+    }
+
+    open fun onEntryEffect(entryEffect: EntryEffect) {
 
     }
 }

@@ -5,7 +5,6 @@ import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.zlib
 import bot.tx.wsure.top.bililiver.dtos.api.room.Room
-import bot.tx.wsure.top.bililiver.dtos.api.token.TokenAndUrl
 import bot.tx.wsure.top.bililiver.dtos.event.*
 import bot.tx.wsure.top.bililiver.dtos.event.cmd.*
 import bot.tx.wsure.top.bililiver.dtos.event.cmd.DanmuMsg.Companion.toDanmuMsg
@@ -25,11 +24,13 @@ import java.util.concurrent.atomic.AtomicLong
 
 class BiliLiverListener(
     val room: Room,
-    val tokenAndUrl: TokenAndUrl,
+    val token: String?,
     val biliLiverEvents: List<BiliLiverEvent>,
-    private val heartbeatDelay: Long = 25000,
-    private val reconnectTimeout: Long = 50000,
-) : BaseBotListener() {
+    val heartbeatDelay: Long,
+    val reconnectTimeout: Long,
+    retryTime:Long,
+    retryWait:Long,
+) : BaseBotListener(retryTime, retryWait) {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     private var hbTimer: Timer? = null
@@ -37,7 +38,7 @@ class BiliLiverListener(
 
     val logHeader = room.toRoomStr()
 
-    var enterRoom = EnterRoom(room.roomid.toLong(),tokenAndUrl.token)
+    var enterRoom = EnterRoom(room.roomid.toLong(),token)
     override fun onOpen(webSocket: WebSocket, response: Response) {
         logger.info("$logHeader onOpen ,send enterRoom package")
         logger.debug("$logHeader enter room hex : ${enterRoom.toPackage().encode().hex()}")
@@ -102,6 +103,20 @@ class BiliLiverListener(
         content.jsonToObjectOrNull<CmdType>()?.also { type ->
             logger.info("$logHeader received ${type.cmd.description} :{}",content)
             when(type.cmd){
+                NoticeCmd.INTERACT_WORD -> {
+                    content.jsonToObjectOrNull<ChatCmdBody<InteractWord>>()?.also { interactWord ->
+                        biliLiverEvents.onEach {
+                            it.onInteractWord(interactWord.data)
+                        }
+                    }
+                }
+                NoticeCmd.ENTRY_EFFECT -> {
+                    content.jsonToObjectOrNull<ChatCmdBody<EntryEffect>>()?.also { entryEffect ->
+                        biliLiverEvents.onEach {
+                            it.onEntryEffect(entryEffect.data)
+                        }
+                    }
+                }
                 NoticeCmd.SUPER_CHAT_MESSAGE -> {
                     content.jsonToObjectOrNull<ChatCmdBody<SuperChatMessage>>()?.also { superChat ->
                         biliLiverEvents.onEach {

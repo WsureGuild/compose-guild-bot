@@ -6,8 +6,8 @@ val brotliVersion = "1.6.0"
 val operatingSystem: OperatingSystem = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentOperatingSystem()
 plugins {
     application
-    kotlin("jvm") version "1.6.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.0"
+    kotlin("jvm") version "1.5.31"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
@@ -33,6 +33,8 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.1")
+
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
     implementation("com.h2database:h2:1.4.200")
@@ -52,6 +54,9 @@ dependencies {
             else ""
         }:$brotliVersion"
     )
+    implementation("org.mapdb:mapdb:3.0.8")
+    implementation("org.ehcache:ehcache:3.9.7")
+    implementation("com.esotericsoftware:kryo:5.2.0")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

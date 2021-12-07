@@ -46,10 +46,11 @@ fun bootBot(){
             YbbTrain(config.toYbbConfig()),
         )
     )
-    val useBL = true
+    val useBL = false
     if (useBL) {
         config.toScConfig().onEach { room ->
-            BiliLiverConsole(room.key) { initBiliLiverEvents(it, unOfficialBotClient, room.value) }
+            BiliLiverConsole(room.key,mutableListOf(SuperChatNotify(room.value, unOfficialBotClient))
+            )
         }
 
     }
@@ -62,14 +63,4 @@ fun initConfig(): Config {
     }?: CONFIG_PATH.readResourceJson<Config>()?.also {
         println(" 读取配置失败，使用默认配置 ")
     }?: throw Exception(" 读取配置失败，无法启动")
-}
-
-fun initBiliLiverEvents(
-    room: Room,
-    unOfficialBotClient: UnOfficialBotClient,
-    guildAndChannel: List<SuperChatConfig>
-): List<BiliLiverEvent> {
-    return mutableListOf(
-        SuperChatNotify(guildAndChannel, room, unOfficialBotClient)
-    )
 }

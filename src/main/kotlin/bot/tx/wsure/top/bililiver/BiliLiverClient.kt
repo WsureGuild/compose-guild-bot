@@ -1,14 +1,24 @@
 package bot.tx.wsure.top.bililiver
 
 import bot.tx.wsure.top.bililiver.dtos.api.room.Room
-import bot.tx.wsure.top.bililiver.dtos.api.token.TokenAndUrl
 import bot.tx.wsure.top.common.WsBotClient
 
 class BiliLiverClient(room:Room,
-                      tokenAndUrl: TokenAndUrl,
+                      token: String? = null,
                       biliLiverEvents:List<BiliLiverEvent> = emptyList(),
-                      wsUrl :String = "wss://broadcastlv.chat.bilibili.com/sub",
+                      wsUrl :String? = null,
+                      heartbeatDelay: Long = 25000,
+                      reconnectTimeout: Long = 50000,
+                      retryTime:Long = 1000,
+                      retryWait:Long = 3000
 ) : WsBotClient<BiliLiverListener>(
-    wsUrl = if(tokenAndUrl.hostList.isEmpty()) wsUrl else tokenAndUrl.hostList.map { it.toWssUrl() }.random(),
-    BiliLiverListener(room,tokenAndUrl,biliLiverEvents)
-)
+    wsUrl ?: "wss://broadcastlv.chat.bilibili.com/sub",
+    BiliLiverListener(room,token,biliLiverEvents,heartbeatDelay,
+            reconnectTimeout,
+            retryTime,
+            retryWait)
+){
+    init {
+        biliLiverEvents.forEach { it.room = room }
+    }
+}

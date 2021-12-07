@@ -7,17 +7,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TokenAndUrl(
     @SerialName("business_id")
-    val businessId: Int,
+    val businessId: Int?,
     @SerialName("group")
-    val group: String,
+    val group: String?,
     @SerialName("host_list")
-    val hostList: List<Host>,
+    val hostList: List<Host> = emptyList(),
     @SerialName("max_delay")
-    val maxDelay: Int,
+    val maxDelay: Int?,
     @SerialName("refresh_rate")
-    val refreshRate: Int,
+    val refreshRate: Int?,
     @SerialName("refresh_row_factor")
-    val refreshRowFactor: Double,
+    val refreshRowFactor: Double?,
     @SerialName("token")
     val token: String
 )

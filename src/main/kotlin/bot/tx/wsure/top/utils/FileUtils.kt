@@ -22,7 +22,7 @@ object FileUtils {
                 logger.warn("Read file {} by File method failure !!", this, it)
             }.getOrNull()
     }
-    fun createFileAndDirectory(file:File,isDir:Boolean){
+    fun createFileAndDirectory(file:File,isDir:Boolean = false){
         if(isDir) file.mkdirs()
         else if(!file.parentFile.exists()){
             file.parentFile.mkdirs()
