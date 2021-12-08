@@ -7,6 +7,7 @@ import bot.tx.wsure.top.bililiver.BiliLiverConsole
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.utils.EhcacheManager
 import bot.tx.wsure.top.utils.FileUtils
+import bot.tx.wsure.top.utils.MapDBManager
 import bot.tx.wsure.top.utils.WeiBoUtils
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -86,5 +87,17 @@ class ApplicationTest {
     fun testEhcache(){
         EhcacheManager.ybb.put("AA", mutableMapOf("1" to 1L))
         println( EhcacheManager.ybb.get("AA").entries.joinToString { it.key + " :  " +it.value })
+    }
+
+    @Test
+    fun testMapDB(){
+//        val t1 = MapDBManager.YBB["111"] ?: mutableMapOf<String,Long>().also {
+//            MapDBManager.YBB["111"] = it
+//        }
+//        t1["AAAA"] = 11L
+//        MapDBManager.YBB["111"] = t1
+//        MapDBManager.db.commit()
+
+        println(MapDBManager.YBB["111"])
     }
 }

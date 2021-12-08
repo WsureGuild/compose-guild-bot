@@ -12,7 +12,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.io.File
-import java.util.*
 import kotlin.io.path.Path
 
 object EhcacheManager : Closeable {
@@ -26,7 +25,7 @@ object EhcacheManager : Closeable {
                     .heap(10, EntryUnit.ENTRIES)
                     .offheap(1, MemoryUnit.MB)
                     .disk(20, MemoryUnit.MB, true)
-            ).withValueSerializer(kotlinxCborSerializer()
+            ).withValueSerializer(ehcacheCborSerializer()
             )
         )
         .withCache(
@@ -35,7 +34,7 @@ object EhcacheManager : Closeable {
                     .heap(10, EntryUnit.ENTRIES)
                     .offheap(1, MemoryUnit.MB)
                     .disk(2, MemoryUnit.MB, true)
-            ).withValueSerializer(kotlinxCborSerializer())
+            ).withValueSerializer(ehcacheCborSerializer())
         )
         // CACHE YBB
         //TODO

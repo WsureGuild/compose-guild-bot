@@ -45,7 +45,7 @@ inline fun <reified T> kotlinxSerializer() :Serializer<T>{
     }
 }
 @OptIn(ExperimentalSerializationApi::class)
-inline fun <reified T> kotlinxCborSerializer() :Serializer<T>{
+inline fun <reified T> ehcacheCborSerializer() :Serializer<T>{
     return object : Serializer<T>{
 
         override fun equals(obj: T, binary: ByteBuffer): Boolean = obj == read(binary)
