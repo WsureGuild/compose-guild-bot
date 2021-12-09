@@ -1,17 +1,16 @@
 package bot.tx.wsure.top.component.unofficial
 
+import bot.tx.wsure.top.component.unofficial.YbbTrain.TopRecord.Companion.addItem
 import bot.tx.wsure.top.config.YbbTranConfig
 import bot.tx.wsure.top.unofficial.UnofficialMessageSender
 import bot.tx.wsure.top.unofficial.dtos.api.toSendGuildChannelMsgAction
 import bot.tx.wsure.top.unofficial.dtos.event.message.GuildMessage
 import bot.tx.wsure.top.unofficial.intf.UnOfficialBotEvent
 import bot.tx.wsure.top.utils.EhcacheManager
+import bot.tx.wsure.top.utils.TimeUtils.todayString
 import kotlinx.serialization.Serializable
 import org.ehcache.Cache
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.Comparator
 
 /*
     YBB小火车
@@ -46,11 +45,7 @@ class YbbTrain(val ybbConfig: Map<Long, List<YbbTranConfig>>) : UnOfficialBotEve
         }
     }
 
-    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    fun todayString(): String {
-        return LocalDateTime.now().format(formatter)
-    }
 
     fun Cache<String,*>.cleanDailyMuteCache() {
         this.filter { it.key != todayString() }.onEach { this.remove(it.key) }
@@ -86,23 +81,25 @@ class YbbTrain(val ybbConfig: Map<Long, List<YbbTranConfig>>) : UnOfficialBotEve
     ) {
         companion object{
             fun comparator():Comparator<TopRecord>{
-                return kotlin.Comparator { t, t2 ->
-                    if(t2.speed > t.speed) -1
-                    else if( t2.speed == t.speed) 0
+                return Comparator { t1, t2 ->
+
+                    if(t2.speed < t1.speed) -1
+                    else if( t2.speed == t1.speed) 0
                     else 1
                 }
+            }
+
+            fun <T> List<T>.addItem(
+                item:T,
+                top:Int = 10,
+                comparator: Comparator<T>):List<T>{
+                val list = this.toMutableList()
+                list.add(item)
+                return list.sortedWith(comparator).take(top)
             }
         }
 
     }
 
-    fun <T> List<T>.addItem(
-        item:T,
-        top:Int = 10,
-        comparator: Comparator<T>):List<T>{
-        val queue = PriorityQueue(top,comparator)
-        this.onEach { queue.add(it) }
-        queue.add(item)
-        return queue.map { it }.toList()
-    }
+
 }

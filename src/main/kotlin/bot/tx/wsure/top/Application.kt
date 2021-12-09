@@ -1,20 +1,14 @@
 package bot.tx.wsure.top
 
 import bot.tx.wsure.top.bililiver.BiliLiverConsole
-import bot.tx.wsure.top.bililiver.BiliLiverEvent
-import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 import bot.tx.wsure.top.component.bililiver.SuperChatNotify
-import bot.tx.wsure.top.component.unofficial.YbbTrain
+import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB
 import bot.tx.wsure.top.config.Config
 import bot.tx.wsure.top.config.Global.CONFIG_PATH
-import bot.tx.wsure.top.config.SuperChatConfig
-import bot.tx.wsure.top.plugins.*
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.utils.FileUtils
 import bot.tx.wsure.top.utils.FileUtils.readFileJson
 import bot.tx.wsure.top.utils.FileUtils.readResourceJson
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.util.*
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -43,10 +37,10 @@ fun bootBot(){
 
     val unOfficialBotClient = UnOfficialBotClient(
         listOf(
-            YbbTrain(config.toYbbConfig()),
+            YbbTrainMapDB(config.toYbbConfig()),
         )
     )
-    val useBL = false
+    val useBL = true
     if (useBL) {
         config.toScConfig().onEach { room ->
             BiliLiverConsole(room.key,mutableListOf(SuperChatNotify(room.value, unOfficialBotClient))

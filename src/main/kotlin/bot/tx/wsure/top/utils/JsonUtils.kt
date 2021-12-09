@@ -17,7 +17,7 @@ object JsonUtils {
     val formatter = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
-//        explicitNulls = false
+        explicitNulls = false
     }
 
     @OptIn(ExperimentalSerializationApi::class)
