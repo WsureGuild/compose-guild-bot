@@ -1,15 +1,22 @@
 {
   "weiboCookie": "",
-  "superChatConfig" : [
+  "superChatConfig": [
     {
       "roomId": "21452505",
       "guildId": 6000051636714649,
       "channelId": 1370732
-    },{
+    },
+    {
       "roomId": "510",
       "guildId": 36667731636792997,
       "channelId": 1365148
-    },{
+    },
+    {
+      "roomId": "510",
+      "guildId": 36667731636792997,
+      "channelId": 1732797
+    },
+    {
       "roomId": "605",
       "guildId": 19995411637241900,
       "channelId": 1542326
@@ -19,9 +26,26 @@
     {
       "guildId": 36667731636792997,
       "channelId": 1591085
-    },{
+    },
+    {
       "guildId": 6000051636714649,
       "channelId": 1560174
     }
-  ]
+  ],
+  "weiboConfig": [
+    {
+      "uid": "7198559139",
+      "guildId": 6000051636714649,
+      "channelId": 1407453
+    },
+    {
+      "uid": "2203177060",
+      "guildId": 36667731636792997,
+      "channelId": 140012
+    }
+  ],
+  "jobConfig": {
+    "WeiboScheduleJob": {
+    }
+  }
 }

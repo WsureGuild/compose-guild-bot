@@ -22,15 +22,23 @@ object MapDBUtils {
 
         }
     }
+    inline fun <reified K,reified V> getCacheByName( db:DB, name :String):HTreeMap<K,V> {
+        return db.hashMap<K,V>(name, mapDBCborSerializer(), mapDBCborSerializer()).createOrOpen()
+    }
 }
-class MapDBWarp<K,V>(val db: DB, val cache: HTreeMap<K, V>){
-    operator fun get(key: K,apply:()->V? = { null }): ElementWarp<V>? {
+class MapDBWarp<K,V>(private val db: DB, val cache: HTreeMap<K, V>){
+    operator fun get(key: K): ElementWarp<V>? {
+        val value = cache[key]
+        return if(value == null) null
+        else ElementWarp(db, value) { set(key, it) }
+    }
+
+    operator fun get(key: K,apply:()->V ): ElementWarp<V> {
         val value = cache[key] ?: runBlocking { val initValue = apply()
             if(initValue != null) set(key,initValue)
             return@runBlocking initValue
         }
-        return if(value == null) null
-        else ElementWarp(db, value) { set(key, it) }
+        return ElementWarp(db, value) { set(key, it) }
     }
 
     operator fun set(key: K, value: V?) {
@@ -48,7 +56,7 @@ class MapDBWarp<K,V>(val db: DB, val cache: HTreeMap<K, V>){
     }
 }
 
-class ElementWarp<V>(val db: DB,var value: V,val setParent:(V)->Unit){
+class ElementWarp<V>(private val db: DB, var value: V, val setParent:(V)->Unit){
 
     fun set(apply: (V) -> Unit){
         apply(value)

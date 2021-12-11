@@ -8,3 +8,5 @@ src/main/resources/config.json
 logs/
 
 ehcache/
+
+config/

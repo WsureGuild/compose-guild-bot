@@ -5,12 +5,17 @@ import bot.tx.wsure.top.component.bililiver.SuperChatNotify
 import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB
 import bot.tx.wsure.top.config.Config
 import bot.tx.wsure.top.config.Global.CONFIG_PATH
+import bot.tx.wsure.top.schedule.JobManager
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.utils.FileUtils
 import bot.tx.wsure.top.utils.FileUtils.readFileJson
 import bot.tx.wsure.top.utils.FileUtils.readResourceJson
+import bot.tx.wsure.top.utils.MapDBManager
 import io.ktor.util.*
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import java.time.Duration
+import java.time.LocalDateTime
 
 @OptIn(InternalAPI::class, InternalCoroutinesApi::class)
 fun main() {
@@ -35,6 +40,9 @@ fun main() {
 fun bootBot(){
     val config : Config = initConfig()
 
+    config.toWbConfig().onEach {
+        MapDBManager.WB_CONFIG[it.key] = it.value
+    }
     val unOfficialBotClient = UnOfficialBotClient(
         listOf(
             YbbTrainMapDB(config.toYbbConfig()),
@@ -43,11 +51,14 @@ fun bootBot(){
     val useBL = true
     if (useBL) {
         config.toScConfig().onEach { room ->
-            BiliLiverConsole(room.key,mutableListOf(SuperChatNotify(room.value, unOfficialBotClient))
-            )
+            BiliLiverConsole(room.key, mutableListOf(
+                SuperChatNotify(room.value, unOfficialBotClient)
+            ))
         }
 
     }
+
+    JobManager(config.jobConfig,unOfficialBotClient).start()
 }
 
 fun initConfig(): Config {

@@ -9,4 +9,8 @@ object CQCode {
          val res =  AT_PATTERN.findAll(this)
         return res.map { it.value.toLong() } .toList()
     }
+
+    fun String.urlToImageCode():String{
+        return "[CQ:image,file=${this},id=40000]"
+    }
 }

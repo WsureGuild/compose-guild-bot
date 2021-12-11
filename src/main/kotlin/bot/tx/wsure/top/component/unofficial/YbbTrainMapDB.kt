@@ -33,7 +33,7 @@ class YbbTrainMapDB(val ybbConfig: Map<Long, List<YbbTranConfig>>) : UnOfficialB
             }
             if (message.message == "竞速榜") {
                 val top10 =
-                    MapDBManager.YBB_TOP[todayString(), { mutableMapOf() }]!!.get { it[message.guildId.toString()] }
+                    MapDBManager.YBB_TOP[todayString(), { mutableMapOf() }].get { it[message.guildId.toString()] }
                         ?: emptyList()
                 if (top10.isNotEmpty()) {
                     val res = message.toSendGuildChannelMsgAction("本频道前10位：\n" + top10.joinToString("\n") {
@@ -61,8 +61,8 @@ class YbbTrainMapDB(val ybbConfig: Map<Long, List<YbbTranConfig>>) : UnOfficialB
         MapDBManager.YBB.cleanDailyMuteCache()
         MapDBManager.YBB_TOP.cleanDailyMuteCache()
 
-        val todayMap = MapDBManager.YBB[todayString(), { mutableMapOf() }]!!
-        val todayTopMap = MapDBManager.YBB_TOP[todayString(), { mutableMapOf() }]!!
+        val todayMap = MapDBManager.YBB[todayString(), { mutableMapOf() }]
+        val todayTopMap = MapDBManager.YBB_TOP[todayString(), { mutableMapOf() }]
 
         val guildTopQueue = todayTopMap.get { it[this.guildId.toString()] } ?: mutableListOf()
         /*

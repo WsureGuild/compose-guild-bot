@@ -19,6 +19,7 @@ application {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -34,6 +35,7 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.1")
+    implementation("org.reflections:reflections:0.10.2")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
@@ -57,6 +59,12 @@ dependencies {
     implementation("org.mapdb:mapdb:3.0.8")
     implementation("org.ehcache:ehcache:3.9.7")
     implementation("com.esotericsoftware:kryo:5.2.0")
+
+    implementation("it.justwrote:kjob-core:0.2.0")
+    implementation("it.justwrote:kjob-kron:0.2.0")
+
+//    implementation("it.justwrote:kjob-mongo") // for mongoDB persistence
+    implementation("it.justwrote:kjob-inmem:0.2.0") // for in-memory 'persistence' (e.g. tests)
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

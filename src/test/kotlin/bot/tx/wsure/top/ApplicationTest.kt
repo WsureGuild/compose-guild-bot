@@ -5,20 +5,27 @@ import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
 import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
 import bot.tx.wsure.top.bililiver.BiliLiverConsole
 import bot.tx.wsure.top.config.Global.CACHE_PATH
-import bot.tx.wsure.top.utils.EhcacheManager
-import bot.tx.wsure.top.utils.FileUtils
-import bot.tx.wsure.top.utils.MapDBManager
-import bot.tx.wsure.top.utils.WeiBoUtils
-import io.ktor.http.*
-import io.ktor.server.testing.*
+import bot.tx.wsure.top.schedule.BaseCronJob
+import bot.tx.wsure.top.schedule.CronJob
+import bot.tx.wsure.top.schedule.WeiboScheduleJob
+import bot.tx.wsure.top.utils.*
+import bot.tx.wsure.top.utils.JsonUtils.objectToJson
+import bot.tx.wsure.top.utils.ReflectionsUtils.getAllSubClass
+import bot.tx.wsure.top.utils.TimeUtils.DATE_FORMATTER
+import it.justwrote.kjob.InMem
+import it.justwrote.kjob.kjob
+import it.justwrote.kjob.kron.Kron
+import it.justwrote.kjob.kron.KronModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.decodeHex
 import org.mapdb.DB
 import org.mapdb.DBMaker
+import java.time.LocalDateTime
+import kotlin.collections.set
 import kotlin.io.path.Path
 import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.time.ExperimentalTime
 
 class ApplicationTest {
 
@@ -91,13 +98,64 @@ class ApplicationTest {
 
     @Test
     fun testMapDB(){
-//        val t1 = MapDBManager.YBB["111"] ?: mutableMapOf<String,Long>().also {
-//            MapDBManager.YBB["111"] = it
-//        }
-//        t1["AAAA"] = 11L
+        val t1 = MapDBManager.YBB["111", { mutableMapOf() }]
+        t1!!.set {
+            it["1112"] = 1010L
+        }
 //        MapDBManager.YBB["111"] = t1
-//        MapDBManager.db.commit()
+
+        val t2 = t1.get { it["1112"] }
+        println(t2)
+    }
+
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun testJob() = runBlocking {
+        val kjob = kjob(InMem) {
+            extension(KronModule)
+        }.start()
+
+        BaseCronJob::class.sealedSubclasses.mapNotNull { it.objectInstance }.onEach { job ->
+            kjob(Kron).kron(job) {
+                maxRetries = 3
+                execute {
+                    job.execute()
+                    println("${job.name} ${LocalDateTime.now().format(DATE_FORMATTER)}")
+                }
+            }
+        }
+
+//
+//
+//
+//        kjob(Kron).kron(WeiboScheduleJob) {
+//            maxRetries = 3
+//            execute {
+//                it.execute()
+//                println("kjob.schedule1 ${LocalDateTime.now().format(DATE_FORMATTER)}")
+//            }
+//        }
+        delay(30000)
+        kjob.shutdown()
+    }
+
+    @Test
+    fun testPackage(){
+        val a = WeiboScheduleJob::class.java
+        val jobList: Set<CronJob>  = CronJob::class.getAllSubClass()
+        jobList.forEach { runBlocking {  it.execute() } }
+    }
+
+    @Test
+    fun testWeibo(){
+//        println( LocalDateTime.parse("Mon Dec 06 02:28:46 +0800 2021", TimeUtils.WB_FORMATTER))
 
         println(MapDBManager.YBB["111"])
+        val uid = "7198559139"
+        val wbList = runBlocking { WeiBoUtils.getMLogByUid2(uid,cookie) }
+        wbList.forEach {
+            println(it.objectToJson())
+        }
     }
 }

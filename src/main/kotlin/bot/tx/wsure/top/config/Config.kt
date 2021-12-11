@@ -10,10 +10,18 @@ data class Config(
     @SerialName("superChatConfig")
     val superChatConfig: List<SuperChatConfig>,
     @SerialName("ybbTranConfig")
-    val ybbTranConfig: List<YbbTranConfig>
+    val ybbTranConfig: List<YbbTranConfig>,
+    @SerialName("jobConfig")
+    val jobConfig : Map<String,Map<String,String>>,
+    @SerialName("weiboConfig")
+    val weiboConfig : List<WeiboChatConfig>,
 ){
     fun toScConfig(): Map<String, List<SuperChatConfig>> {
         return superChatConfig.groupBy { it.roomId }
+    }
+
+    fun toWbConfig(): Map<String, List<WeiboChatConfig>> {
+        return weiboConfig.groupBy { it.uid }
     }
 
     fun toYbbConfig() : Map<Long, List<YbbTranConfig>>{
@@ -29,6 +37,16 @@ data class SuperChatConfig(
     val guildId: Long,
     @SerialName("roomId")
     val roomId: String
+)
+
+@Serializable
+data class WeiboChatConfig(
+    @SerialName("channelId")
+    val channelId: Long,
+    @SerialName("guildId")
+    val guildId: Long,
+    @SerialName("uid")
+    val uid: String
 )
 
 @Serializable
