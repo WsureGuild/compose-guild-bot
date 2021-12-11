@@ -1,7 +1,6 @@
 package bot.tx.wsure.top.bililiver
 
 import bot.tx.wsure.top.bililiver.api.BiliLiverApi
-import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 
 class BiliLiverConsole(roomId:String,eventList:List<BiliLiverEvent> = emptyList() ) {
     init {

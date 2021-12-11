@@ -5,49 +5,48 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Config(
-    @SerialName("weiboCookie")
-    val weiboCookie: String,
-    @SerialName("superChatConfig")
-    val superChatConfig: List<SuperChatConfig>,
+    @SerialName("channels")
+    val channels : List<ChannelConfig>,
+
     @SerialName("ybbTranConfig")
-    val ybbTranConfig: List<YbbTranConfig>,
+    val ybbTranConfig: List<String>,
+    @SerialName("superChatConfig")
+    val superChatConfig: List<CommConfig>,
+    @SerialName("weiboConfig")
+    val weiboConfig : List<CommConfig>,
+
     @SerialName("jobConfig")
     val jobConfig : Map<String,Map<String,String>>,
-    @SerialName("weiboConfig")
-    val weiboConfig : List<WeiboChatConfig>,
 ){
-    fun toScConfig(): Map<String, List<SuperChatConfig>> {
-        return superChatConfig.groupBy { it.roomId }
+    val channelsMap = channels.associateBy { it.name }
+    fun List<String>.channelNameToConfig():List<ChannelConfig>{
+        return channels.filter { this.contains(it.name) }
+    }
+    fun Map<String,List<CommConfig>>.toChannelConfig():Map<String, List<ChannelConfig>>{
+        return this.mapValues { e -> e.value.mapNotNull { channelsMap[it.channelName] } }
     }
 
-    fun toWbConfig(): Map<String, List<WeiboChatConfig>> {
-        return weiboConfig.groupBy { it.uid }
+    fun toScConfig(): Map<String, List<ChannelConfig>> {
+        return superChatConfig.groupBy { it.key }.toChannelConfig()
     }
 
-    fun toYbbConfig() : Map<Long, List<YbbTranConfig>>{
-        return ybbTranConfig.groupBy { it.guildId }
+    fun toWbConfig(): Map<String, List<ChannelConfig>> {
+        return weiboConfig.groupBy { it.key }.toChannelConfig()
+    }
+
+    fun toYbbConfig() : Map<Long, List<ChannelConfig>>{
+        return ybbTranConfig.channelNameToConfig().groupBy { it.guildId }
     }
 }
 
 @Serializable
-data class SuperChatConfig(
-    @SerialName("channelId")
-    val channelId: Long,
-    @SerialName("guildId")
-    val guildId: Long,
+data class CommConfig(
+    @SerialName("channelName")
+    val channelName:String,
     @SerialName("roomId")
-    val roomId: String
+    val key: String
 )
 
-@Serializable
-data class WeiboChatConfig(
-    @SerialName("channelId")
-    val channelId: Long,
-    @SerialName("guildId")
-    val guildId: Long,
-    @SerialName("uid")
-    val uid: String
-)
 
 @Serializable
 data class YbbTranConfig(
@@ -55,4 +54,16 @@ data class YbbTranConfig(
     val channelId: Long,
     @SerialName("guildId")
     val guildId: Long
+)
+
+@Serializable
+data class ChannelConfig(
+    @SerialName("channelId")
+    val channelId: Long,
+    @SerialName("guildId")
+    val guildId: Long,
+    @SerialName("name")
+    val name: String,
+    @SerialName("description")
+    val description: String? = null,
 )

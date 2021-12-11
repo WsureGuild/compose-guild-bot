@@ -13,9 +13,6 @@ import bot.tx.wsure.top.utils.FileUtils.readResourceJson
 import bot.tx.wsure.top.utils.MapDBManager
 import io.ktor.util.*
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import java.time.Duration
-import java.time.LocalDateTime
 
 @OptIn(InternalAPI::class, InternalCoroutinesApi::class)
 fun main() {

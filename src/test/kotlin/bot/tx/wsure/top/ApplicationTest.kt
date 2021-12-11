@@ -7,11 +7,13 @@ import bot.tx.wsure.top.bililiver.BiliLiverConsole
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BaseCronJob
 import bot.tx.wsure.top.schedule.CronJob
-import bot.tx.wsure.top.schedule.WeiboScheduleJob
-import bot.tx.wsure.top.utils.*
+import bot.tx.wsure.top.utils.EhcacheManager
+import bot.tx.wsure.top.utils.FileUtils
 import bot.tx.wsure.top.utils.JsonUtils.objectToJson
+import bot.tx.wsure.top.utils.MapDBManager
 import bot.tx.wsure.top.utils.ReflectionsUtils.getAllSubClass
 import bot.tx.wsure.top.utils.TimeUtils.DATE_FORMATTER
+import bot.tx.wsure.top.utils.WeiBoUtils
 import it.justwrote.kjob.InMem
 import it.justwrote.kjob.kjob
 import it.justwrote.kjob.kron.Kron
@@ -25,7 +27,6 @@ import java.time.LocalDateTime
 import kotlin.collections.set
 import kotlin.io.path.Path
 import kotlin.test.Test
-import kotlin.time.ExperimentalTime
 
 class ApplicationTest {
 
@@ -99,7 +100,7 @@ class ApplicationTest {
     @Test
     fun testMapDB(){
         val t1 = MapDBManager.YBB["111", { mutableMapOf() }]
-        t1!!.set {
+        t1.set {
             it["1112"] = 1010L
         }
 //        MapDBManager.YBB["111"] = t1
@@ -109,7 +110,6 @@ class ApplicationTest {
     }
 
 
-    @OptIn(ExperimentalTime::class)
     @Test
     fun testJob() = runBlocking {
         val kjob = kjob(InMem) {
@@ -142,7 +142,6 @@ class ApplicationTest {
 
     @Test
     fun testPackage(){
-        val a = WeiboScheduleJob::class.java
         val jobList: Set<CronJob>  = CronJob::class.getAllSubClass()
         jobList.forEach { runBlocking {  it.execute() } }
     }

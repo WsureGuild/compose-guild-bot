@@ -1,7 +1,5 @@
 package bot.tx.wsure.top.bililiver.dtos.api.danmu
 
-import kotlin.reflect.full.memberProperties
-
 data class Danmu(
 val msg :String ,
 val roomid :String ,

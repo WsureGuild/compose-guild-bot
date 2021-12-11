@@ -1,7 +1,7 @@
 package bot.tx.wsure.top.component.unofficial
 
 import bot.tx.wsure.top.component.unofficial.YbbTrain.TopRecord.Companion.addItem
-import bot.tx.wsure.top.config.YbbTranConfig
+import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.unofficial.UnofficialMessageSender
 import bot.tx.wsure.top.unofficial.dtos.api.toSendGuildChannelMsgAction
 import bot.tx.wsure.top.unofficial.dtos.event.message.GuildMessage
@@ -13,7 +13,7 @@ import bot.tx.wsure.top.utils.TimeUtils.todayString
 /*
     YBB小火车
  */
-class YbbTrainMapDB(val ybbConfig: Map<Long, List<YbbTranConfig>>) : UnOfficialBotEvent() {
+class YbbTrainMapDB(val ybbConfig: Map<Long, List<ChannelConfig>>) : UnOfficialBotEvent() {
 
     override suspend fun onGuildMessage(sender: UnofficialMessageSender, message: GuildMessage) {
 

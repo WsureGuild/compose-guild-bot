@@ -1,10 +1,9 @@
 package bot.tx.wsure.top.component.bililiver
 
 import bot.tx.wsure.top.bililiver.BiliLiverEvent
-import bot.tx.wsure.top.bililiver.dtos.api.room.Room
 import bot.tx.wsure.top.bililiver.dtos.event.cmd.RoomBlockMsg
 import bot.tx.wsure.top.bililiver.dtos.event.cmd.SuperChatMessage
-import bot.tx.wsure.top.config.SuperChatConfig
+import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
 import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsgAction
@@ -13,7 +12,7 @@ import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class SuperChatNotify(val config:List<SuperChatConfig>, val sender: UnOfficialBotClient): BiliLiverEvent() {
+class SuperChatNotify(val config:List<ChannelConfig>, val sender: UnOfficialBotClient): BiliLiverEvent() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun onSuperChatMessage(superChatMessage: SuperChatMessage){
@@ -33,7 +32,7 @@ class SuperChatNotify(val config:List<SuperChatConfig>, val sender: UnOfficialBo
         }
     }
 
-    fun unofficialGuildMessage(msg:String,channel: SuperChatConfig): BaseAction<SendGuildChannelMsgAction> {
+    fun unofficialGuildMessage(msg:String,channel: ChannelConfig): BaseAction<SendGuildChannelMsgAction> {
         return BaseAction(ActionEnums.SEND_GUILD_CHANNEL_MSG, SendGuildChannelMsgAction( channel.guildId,channel.channelId,msg ))  //6000051636714649,1370732,msg))
     }
 }

@@ -1,47 +1,85 @@
 {
   "weiboCookie": "",
-  "superChatConfig": [
+  "channels": [
     {
-      "roomId": "21452505",
+      "name": "nanami_sc",
+      "description": "海频SC",
       "guildId": 6000051636714649,
       "channelId": 1370732
     },
     {
-      "roomId": "510",
-      "guildId": 36667731636792997,
-      "channelId": 1365148
-    },
-    {
-      "roomId": "510",
-      "guildId": 36667731636792997,
-      "channelId": 1732797
-    },
-    {
-      "roomId": "605",
-      "guildId": 19995411637241900,
-      "channelId": 1542326
-    }
-  ],
-  "ybbTranConfig": [
-    {
-      "guildId": 36667731636792997,
-      "channelId": 1591085
-    },
-    {
+      "name": "nanami_ybb",
+      "description": "海频YBB",
       "guildId": 6000051636714649,
       "channelId": 1560174
-    }
-  ],
-  "weiboConfig": [
+    },
     {
-      "uid": "7198559139",
+      "name": "nanami_dynamic",
+      "description": "海频动态",
       "guildId": 6000051636714649,
       "channelId": 1407453
     },
     {
-      "uid": "2203177060",
+      "name": "azu_live_topic",
+      "description": "梓频直播讨论",
+      "guildId": 36667731636792997,
+      "channelId": 1365148
+    },
+    {
+      "name": "azu_archives",
+      "description": "梓频档案",
+      "guildId": 36667731636792997,
+      "channelId": 1732797
+    },
+    {
+      "name": "azu_ybb",
+      "description": "梓频YBB",
+      "guildId": 36667731636792997,
+      "channelId": 1591085
+    },
+    {
+      "name": "azu_dynamic",
+      "description": "梓频动态",
       "guildId": 36667731636792997,
       "channelId": 140012
+    },
+    {
+      "name": "xiaoke_sc",
+      "description": "小可频SC",
+      "guildId": 19995411637241900,
+      "channelId": 1542326
+    }
+  ],
+  "superChatConfig": [
+    {
+      "roomId": "21452505",
+      "channelName": "nanami_sc"
+    },
+    {
+      "roomId": "510",
+      "channelName": "azu_live_topic"
+    },
+    {
+      "roomId": "510",
+      "channelName": "azu_archives"
+    },
+    {
+      "roomId": "605",
+      "channelName": "xiaoke_sc"
+    }
+  ],
+  "ybbTranConfig": [
+    "nanami_ybb",
+    "azu_ybb"
+  ],
+  "weiboConfig": [
+    {
+      "uid": "7198559139",
+      "channelName":"nanami_dynamic"
+    },
+    {
+      "uid": "2203177060",
+      "channelName":"azu_dynamic"
     }
   ],
   "jobConfig": {
