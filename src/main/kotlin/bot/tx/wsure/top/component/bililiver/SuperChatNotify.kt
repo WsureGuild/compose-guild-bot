@@ -1,8 +1,5 @@
 package bot.tx.wsure.top.component.bililiver
 
-import bot.tx.wsure.top.bililiver.BiliLiverEvent
-import bot.tx.wsure.top.bililiver.dtos.event.cmd.RoomBlockMsg
-import bot.tx.wsure.top.bililiver.dtos.event.cmd.SuperChatMessage
 import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
@@ -11,6 +8,9 @@ import bot.tx.wsure.top.unofficial.enums.ActionEnums
 import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import top.wsure.bililiver.bililiver.BiliLiverEvent
+import top.wsure.bililiver.bililiver.dtos.event.cmd.RoomBlockMsg
+import top.wsure.bililiver.bililiver.dtos.event.cmd.SuperChatMessage
 
 class SuperChatNotify(val config:List<ChannelConfig>, val sender: UnOfficialBotClient): BiliLiverEvent() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)

@@ -1,6 +1,5 @@
 package bot.tx.wsure.top
 
-import bot.tx.wsure.top.bililiver.BiliLiverConsole
 import bot.tx.wsure.top.component.bililiver.SuperChatNotify
 import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB
 import bot.tx.wsure.top.config.Config
@@ -13,6 +12,7 @@ import bot.tx.wsure.top.utils.FileUtils.readResourceJson
 import bot.tx.wsure.top.utils.MapDBManager
 import io.ktor.util.*
 import kotlinx.coroutines.InternalCoroutinesApi
+import top.wsure.bililiver.bililiver.BiliLiverConsole
 
 @OptIn(InternalAPI::class, InternalCoroutinesApi::class)
 fun main() {
@@ -36,18 +36,22 @@ fun main() {
 
 fun bootBot(){
     val config : Config = initConfig()
+    initCacheConfig(config)
 
-    config.toWbConfig().onEach {
-        MapDBManager.WB_CONFIG[it.key] = it.value
-    }
-    val unOfficialBotClient = UnOfficialBotClient(
-        listOf(
-            YbbTrainMapDB(config.toYbbConfig()),
-        )
+    // init gocqhttp bot listener
+    val unofficialListeners = listOf(
+        // todo
+        YbbTrainMapDB(config.toYbbConfig()),
     )
-    val useBL = true
+    // init gocqhttp bot client
+    val unOfficialBotClient = UnOfficialBotClient(unofficialListeners)
+
+    // todo
+    val useBL = false
+
     if (useBL) {
-        config.toScConfig().onEach { room ->
+        val scConfig = config.toScConfig()
+        scConfig.onEach { room ->
             BiliLiverConsole(room.key, mutableListOf(
                 SuperChatNotify(room.value, unOfficialBotClient)
             ))
@@ -65,4 +69,11 @@ fun initConfig(): Config {
     }?: CONFIG_PATH.readResourceJson<Config>()?.also {
         println(" 读取配置失败，使用默认配置 ")
     }?: throw Exception(" 读取配置失败，无法启动")
+}
+
+fun initCacheConfig(config: Config){
+    // init wb_config
+    config.toWbConfig().onEach {
+        MapDBManager.WB_CONFIG[it.key] = it.value
+    }
 }

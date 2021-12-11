@@ -52,19 +52,19 @@
   ],
   "superChatConfig": [
     {
-      "roomId": "21452505",
+      "key": "21452505",
       "channelName": "nanami_sc"
     },
     {
-      "roomId": "510",
+      "key": "510",
       "channelName": "azu_live_topic"
     },
     {
-      "roomId": "510",
+      "key": "510",
       "channelName": "azu_archives"
     },
     {
-      "roomId": "605",
+      "key": "605",
       "channelName": "xiaoke_sc"
     }
   ],
@@ -74,11 +74,11 @@
   ],
   "weiboConfig": [
     {
-      "uid": "7198559139",
+      "key": "7198559139",
       "channelName":"nanami_dynamic"
     },
     {
-      "uid": "2203177060",
+      "key": "2203177060",
       "channelName":"azu_dynamic"
     }
   ],

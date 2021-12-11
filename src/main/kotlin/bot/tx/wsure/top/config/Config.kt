@@ -43,7 +43,7 @@ data class Config(
 data class CommConfig(
     @SerialName("channelName")
     val channelName:String,
-    @SerialName("roomId")
+    @SerialName("key")
     val key: String
 )
 

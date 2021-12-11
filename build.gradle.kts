@@ -23,6 +23,9 @@ repositories {
 }
 
 dependencies {
+    //todo push to mavenCenter : https://github.com/WsureDev/wsure-bililiver
+    implementation("top.wsure.bililiver:wsure-bililiver:1.0-SNAPSHOT")
+
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-serialization:$ktor_version")
