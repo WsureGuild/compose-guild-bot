@@ -48,17 +48,6 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jodatime:$exposedVersion")
 
-    implementation("com.aayushatharva.brotli4j:brotli4j:$brotliVersion")
-    implementation(
-        "com.aayushatharva.brotli4j:native-${
-            if (operatingSystem.isWindows) "windows-x86_64"
-            else if (operatingSystem.isMacOsX) "osx-x86_64"
-            else if (operatingSystem.isLinux)
-                if (org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentArchitecture().isArm) "linux-aarch64"
-                else "native-linux-x86_64"
-            else ""
-        }:$brotliVersion"
-    )
     implementation("org.mapdb:mapdb:3.0.8")
     implementation("org.ehcache:ehcache:3.9.7")
     implementation("com.esotericsoftware:kryo:5.2.0")
