@@ -5,6 +5,7 @@ import bot.tx.wsure.top.spider.dtos.WeiBo
 import bot.tx.wsure.top.unofficial.dtos.CQCode.urlToImageCode
 import bot.tx.wsure.top.utils.HttpUtils.getWithHeaderAndQuery
 import bot.tx.wsure.top.utils.JsonUtils.jsonToObjectOrNull
+import bot.tx.wsure.top.utils.WeiBoUtils.toUnofficialMessageText
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -29,14 +30,28 @@ object WeiBoUtils {
         return page?: emptyList()
     }
 
-    val WBFacePrefix = Regex("(?<=<span).?+(?=\\[)")
-    val WBFaceSuffix = Regex("(?<=]).?+(?=span>)")
+    val WBFacePrefix = Regex("<span.+?(?=\\[)")
+    val WBFaceSuffix = Regex("(?<=]).+?span>")
     val WBImagePrefix = "https://wx3.sinaimg.cn/large/"
+    val WBDetailPrefix = "https://m.weibo.cn/detail/"
     fun Mblog.toUnofficialMessageText():String{
         val user = this.user.screenName
         val time = this.createdAt.format(TimeUtils.DATE_FORMATTER)
         val text = this.text.replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
         val images = this.picIds.joinToString("") { "$WBImagePrefix$it".urlToImageCode() }
-        return "[$user]\n[$time]\n\t- - -\n\n$text\n\n\t- - -\n[sent by ${this.source}]\n$images\n$"
+        return "${this.user.profileImageUrl.urlToImageCode()}[$user]\n" +
+                "[$time by ${this.source}]\n\n" +
+                "$text\n" +
+                "${if(this.retweetedStatus == null)"" else "<转发：" +this.retweetedStatus.retweetedMblogToUnofficialMessageText()}>\n" +
+                "$images\n" +
+                "${WBDetailPrefix+this.id} "
     }
+    fun Mblog.retweetedMblogToUnofficialMessageText():String{
+        val user = this.user.screenName
+        val time = this.createdAt.format(TimeUtils.DATE_FORMATTER)
+        val text = this.text.replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
+        val images = this.picIds.joinToString("") { "$WBImagePrefix$it".urlToImageCode() }
+        return "@${user}:${text}\n$images"
+    }
+
 }

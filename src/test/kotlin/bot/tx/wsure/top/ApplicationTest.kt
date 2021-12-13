@@ -143,8 +143,8 @@ class ApplicationTest {
 
     @Test
     fun testPackage(){
-        val jobList: Set<CronJob>  = CronJob::class.getAllSubClass()
-        jobList.forEach { runBlocking {  it.execute() } }
+        val text = "困啊<span class=\"url-icon\"><img alt=[困] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_kun-0f87c3e1f8.png\" style=\"width:1em; height:1em;\" /></span>录音<span class=\"url-icon\"><img alt=[困] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_kun-0f87c3e1f8.png\" style=\"width:1em; height:1em;\" /></span> "
+        println( text.replace(WeiBoUtils.WBFacePrefix,"").replace(WeiBoUtils.WBFaceSuffix,""))
     }
 
     @Test
@@ -152,10 +152,10 @@ class ApplicationTest {
 //        println( LocalDateTime.parse("Mon Dec 06 02:28:46 +0800 2021", TimeUtils.WB_FORMATTER))
 
         println(MapDBManager.YBB["111"])
-        val uid = "7198559139"
+        val uid = "2085108062"
         val wbList = runBlocking { WeiBoUtils.getMLogByUid2(uid,cookie) }
         wbList.forEach {
-            println(it.objectToJson())
+            println(it.toUnofficialMessageText())
         }
     }
 
