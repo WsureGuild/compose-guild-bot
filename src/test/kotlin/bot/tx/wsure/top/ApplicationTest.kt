@@ -1,9 +1,5 @@
 package bot.tx.wsure.top
 
-import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.brotli
-import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackage
-import bot.tx.wsure.top.bililiver.BiliLiverChatUtils.toChatPackageList
-import bot.tx.wsure.top.bililiver.BiliLiverConsole
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BaseCronJob
 import bot.tx.wsure.top.schedule.CronJob
@@ -23,6 +19,11 @@ import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.decodeHex
 import org.mapdb.DB
 import org.mapdb.DBMaker
+import top.wsure.bililiver.bililiver.BiliLiverChatUtils.brotli
+import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackage
+import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackageList
+import top.wsure.bililiver.bililiver.BiliLiverConsole
+import top.wsure.bililiver.bililiver.api.BiliLiverApi
 import java.time.LocalDateTime
 import kotlin.collections.set
 import kotlin.io.path.Path
@@ -156,5 +157,14 @@ class ApplicationTest {
         wbList.forEach {
             println(it.objectToJson())
         }
+    }
+
+    @Test
+    fun testSpace(){
+        listOf("434334701","27092536","777656","2123").forEach {
+            val space = BiliLiverApi.getSpace(it)
+            println(space?.liveRoom?.liveStatus?:0)
+        }
+
     }
 }

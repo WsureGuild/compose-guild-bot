@@ -37,6 +37,6 @@ object WeiBoUtils {
         val time = this.createdAt.format(TimeUtils.DATE_FORMATTER)
         val text = this.text.replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
         val images = this.picIds.joinToString("") { "$WBImagePrefix$it".urlToImageCode() }
-        return "[user:$user]\n[time:$time]\n\t$text\nsent by [${this.source}]\n$images"
+        return "[$user]\n[$time]\n\t- - -\n\n$text\n\n\t- - -\n[sent by ${this.source}]\n$images\n$"
     }
 }

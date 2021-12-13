@@ -47,7 +47,7 @@ fun bootBot(){
     val unOfficialBotClient = UnOfficialBotClient(unofficialListeners)
 
     // todo
-    val useBL = false
+    val useBL = true
 
     if (useBL) {
         val scConfig = config.toScConfig()
@@ -75,5 +75,9 @@ fun initCacheConfig(config: Config){
     // init wb_config
     config.toWbConfig().onEach {
         MapDBManager.WB_CONFIG[it.key] = it.value
+    }
+    // init bl_config
+    config.toBLConfig().onEach {
+        MapDBManager.BL_CONFIG[it.key] = it.value
     }
 }

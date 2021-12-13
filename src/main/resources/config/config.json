@@ -2,6 +2,12 @@
   "weiboCookie": "",
   "channels": [
     {
+      "name": "nanami_notify",
+      "description": "海频公告",
+      "guildId": 6000051636714649,
+      "channelId": 1328438
+    },
+    {
       "name": "nanami_sc",
       "description": "海频SC",
       "guildId": 6000051636714649,
@@ -38,10 +44,16 @@
       "channelId": 1591085
     },
     {
+      "name": "azu_notify",
+      "description": "梓频重要通知",
+      "guildId": 36667731636792997,
+      "channelId": 1365147
+    },
+    {
       "name": "azu_dynamic",
       "description": "梓频动态",
       "guildId": 36667731636792997,
-      "channelId": 140012
+      "channelId": 1400120
     },
     {
       "name": "xiaoke_sc",
@@ -80,6 +92,20 @@
     {
       "key": "2203177060",
       "channelName":"azu_dynamic"
+    }
+  ],
+  "bililiverConfig": [
+    {
+      "key": "434334701",
+      "channelName":"nanami_notify"
+    },
+    {
+      "key": "7706705",
+      "channelName":"azu_notify"
+    },
+    {
+      "key": "777656",
+      "channelName":"nanami_ybb"
     }
   ],
   "jobConfig": {

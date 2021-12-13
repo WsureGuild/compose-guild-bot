@@ -14,6 +14,8 @@ data class Config(
     val superChatConfig: List<CommConfig>,
     @SerialName("weiboConfig")
     val weiboConfig : List<CommConfig>,
+    @SerialName("bililiverConfig")
+    val bililiverConfig : List<CommConfig>,
 
     @SerialName("jobConfig")
     val jobConfig : Map<String,Map<String,String>>,
@@ -32,6 +34,10 @@ data class Config(
 
     fun toWbConfig(): Map<String, List<ChannelConfig>> {
         return weiboConfig.groupBy { it.key }.toChannelConfig()
+    }
+
+    fun toBLConfig(): Map<String, List<ChannelConfig>> {
+        return bililiverConfig.groupBy { it.key }.toChannelConfig()
     }
 
     fun toYbbConfig() : Map<Long, List<ChannelConfig>>{

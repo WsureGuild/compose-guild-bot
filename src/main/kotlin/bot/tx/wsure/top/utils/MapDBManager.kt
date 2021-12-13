@@ -6,6 +6,7 @@ import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.spider.dtos.Mblog
 import bot.tx.wsure.top.utils.MapDBUtils.getCacheByName
 import org.mapdb.DBMaker.fileDB
+import top.wsure.bililiver.bililiver.dtos.api.space.LiveRoom
 import java.io.File
 
 
@@ -28,4 +29,7 @@ object MapDBManager {
 
     val WB_CACHE: MapDBWarp<String,List<Mblog>> = MapDBWarp(db,getCacheByName(db,"WB_CACHE"))
 
+    val BL_CONFIG: MapDBWarp<String,List<ChannelConfig>> = MapDBWarp(db,getCacheByName(db,"BL_CONFIG"))
+
+    val BL_CACHE: MapDBWarp<String, LiveRoom> = MapDBWarp(db,getCacheByName(db,"BL_CACHE"))
 }
