@@ -1,4 +1,4 @@
-package bot.tx.wsure.top.spider.dtos
+package bot.tx.wsure.top.spider.dtos.weibo
 
 import bot.tx.wsure.top.utils.WBTimeSerializer
 import kotlinx.serialization.SerialName
@@ -16,11 +16,11 @@ data class WeiBo(
 @Serializable
 data class Data(
     @SerialName("cards")
-    val cards: List<Card> = emptyList(),
+    val cards: List<WBCard> = emptyList(),
 )
 
 @Serializable
-data class Card(
+data class WBCard(
     @SerialName("card_type")
     val cardType: Int? = null,
     @SerialName("lastWeiboCard")
@@ -33,7 +33,7 @@ data class Card(
 data class Mblog(
 
     @SerialName("user")
-    val user:User,
+    val user: User,
     @SerialName("id")
     val id: String,
     @SerialName("created_at")

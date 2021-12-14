@@ -2,14 +2,14 @@ package bot.tx.wsure.top
 
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BaseCronJob
-import bot.tx.wsure.top.schedule.CronJob
 import bot.tx.wsure.top.utils.EhcacheManager
 import bot.tx.wsure.top.utils.FileUtils
-import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import bot.tx.wsure.top.utils.MapDBManager
-import bot.tx.wsure.top.utils.ReflectionsUtils.getAllSubClass
 import bot.tx.wsure.top.utils.TimeUtils.DATE_FORMATTER
 import bot.tx.wsure.top.utils.WeiBoUtils
+import bot.tx.wsure.top.utils.WeiBoUtils.WBFacePrefix
+import bot.tx.wsure.top.utils.WeiBoUtils.WBFaceSuffix
+import bot.tx.wsure.top.utils.WeiBoUtils.filterMblogContext
 import it.justwrote.kjob.InMem
 import it.justwrote.kjob.kjob
 import it.justwrote.kjob.kron.Kron
@@ -24,10 +24,13 @@ import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackage
 import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackageList
 import top.wsure.bililiver.bililiver.BiliLiverConsole
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
+import java.time.Instant
 import java.time.LocalDateTime
+import java.util.*
 import kotlin.collections.set
 import kotlin.io.path.Path
 import kotlin.test.Test
+
 
 class ApplicationTest {
 
@@ -149,14 +152,14 @@ class ApplicationTest {
 
     @Test
     fun testWeibo(){
-//        println( LocalDateTime.parse("Mon Dec 06 02:28:46 +0800 2021", TimeUtils.WB_FORMATTER))
-
-        println(MapDBManager.YBB["111"])
-        val uid = "2085108062"
-        val wbList = runBlocking { WeiBoUtils.getMLogByUid2(uid,cookie) }
-        wbList.forEach {
-            println(it.toUnofficialMessageText())
-        }
+        val text = "派友JeremyMcFake：<br />从第0赛季起，<br />我就在这了，<br />玩了2000小时但还是玩成这样<br /><a  href=\\\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23Apex%E7%AC%AC11%E8%B5%9B%E5%AD%A3%23&extparam=%23Apex%E7%AC%AC11%E8%B5%9B%E5%AD%A3%23&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class=\\\"surl-text\\\">#Apex第11赛季#</span></a><a  href=\\\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23Apex%E8%8B%B1%E9%9B%84%23&extparam=%23Apex%E8%8B%B1%E9%9B%84%23&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class=\\\"surl-text\\\">#Apex英雄#</span></a> <br />大部分表示，抓钩那里，血压真的上来了<span class=\\\"url-icon\\\"><img alt=[二哈] src=\\\"https://h5.sinaimg.cn/m/emoticon/icon/others/d_erha-139d0e07bd.png\\\" style=\\\"width:1em; height:1em;\\\" /></span><br /><a  href=\\\"https://m.weibo.cn/p/index?extparam=APEX%E8%8B%B1%E9%9B%84&containerid=1008089eedf76d192882bdc668060ccd90621e&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class='url-icon'><img style='width: 1rem;height: 1rem' src='https://n.sinaimg.cn/photo/5213b46e/20180926/timeline_card_small_super_default.png'></span><span class=\\\"surl-text\\\">APEX英雄</span></a> <a data-url=\\\"http://t.cn/A6x8TN4I\\\" href=\\\"https://video.weibo.com/show?fid=1034:4714243665362961\\\" data-hide=\\\"\\\"><span class='url-icon'><img style='width: 1rem;height: 1rem' src='https://h5.sinaimg.cn/upload/2015/09/25/3/timeline_card_small_video_default.png'></span><span class=\\\"surl-text\\\">APEX英雄的微博视频</span></a> "
+        val res = text.replace(Regex("\\<br\\s*\\/>"),"\n")
+            .replace("</span></a>","")
+//            .replace(Regex("\\<a.+?>#"),"#").replace(Regex("#\\</.*?a>"),"# ")
+            .replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
+            .replace(Regex("\\<a.*?surl-text\\\\\">"),"")
+        println(res)
+        println(text.filterMblogContext())
     }
 
     @Test
@@ -166,5 +169,14 @@ class ApplicationTest {
             println(space?.liveRoom?.liveStatus?:0)
         }
 
+    }
+
+    @Test
+    fun testTimestamp(){
+        val triggerTime = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(1639365571L),
+            TimeZone.getDefault().toZoneId()
+        )
+        println(triggerTime.format(DATE_FORMATTER))
     }
 }

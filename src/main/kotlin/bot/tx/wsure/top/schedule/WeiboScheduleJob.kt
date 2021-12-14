@@ -1,6 +1,7 @@
 package bot.tx.wsure.top.schedule
 
-import bot.tx.wsure.top.spider.dtos.Mblog
+import bot.tx.wsure.top.config.ChannelConfig
+import bot.tx.wsure.top.spider.dtos.weibo.Mblog
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
 import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsgAction
@@ -27,8 +28,17 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
                 logger.info("${this.name} - start load :${entry.key}")
                 val wbList = WeiBoUtils.getMLogByUid2(entry.key!!,cookie)
                 if(wbList.isNotEmpty()){
+                    val topList = wbList.filter { it.isTop != null && it.isTop == 1 }
+                    val oldTopList =  MapDBManager.WB_TOP[entry.key!!, { mutableListOf() }].value
+                    val newTopList = topList.filter { ! oldTopList.map { o -> o.id }.contains(it.id) }
+                    if(newTopList.isNotEmpty()){
+                        MapDBManager.WB_TOP[entry.key!!] = newTopList
+                        sender?.also { sender ->
+                            entry.value?.sendMblogMessage(sender,newTopList)
+                        }
+                    }
                     val oldList = MapDBManager.WB_CACHE[entry.key!!, { mutableListOf() }].value
-                    val newList = addedWebList(oldList,wbList)
+                    val newList = addedWebList(oldList,wbList.filter { it.isTop == null || it.isTop != 1 })
                     //save
                     MapDBManager.WB_CACHE[entry.key!!] = mergeWebList(oldList , newList)
                     //send
@@ -37,18 +47,22 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
                         return@onEach
                     }
                     sender?.also { sender ->
-                        newList.forEach { mblog ->
-                            entry.value?.forEach { guild ->
-                                val msg = BaseAction(ActionEnums.SEND_GUILD_CHANNEL_MSG,
-                                    SendGuildChannelMsgAction(guild.guildId,guild.channelId,mblog.toUnofficialMessageText())
-                                )
-                                sender.sendMessage(msg.objectToJson())
-                            }
-                        }
+                        entry.value?.sendMblogMessage(sender,newList)
                     }
                 }
                 delay(3000)
             }
+        }
+    }
+
+    fun List<ChannelConfig>.sendMblogMessage(sender: UnOfficialBotClient, mblogs: List<Mblog>){
+        this.forEach { guild ->
+            val msg = mblogs.joinToString("\n") { mblog ->
+                BaseAction(ActionEnums.SEND_GUILD_CHANNEL_MSG,
+                    SendGuildChannelMsgAction(guild.guildId,guild.channelId,mblog.toUnofficialMessageText())
+                ).objectToJson()
+            }
+            sender.sendMessage(msg)
         }
     }
 

@@ -1,10 +1,11 @@
 package bot.tx.wsure.top.utils
 
-import bot.tx.wsure.top.spider.dtos.Mblog
-import bot.tx.wsure.top.spider.dtos.WeiBo
+import bot.tx.wsure.top.spider.dtos.weibo.Mblog
+import bot.tx.wsure.top.spider.dtos.weibo.WeiBo
 import bot.tx.wsure.top.unofficial.dtos.CQCode.urlToImageCode
 import bot.tx.wsure.top.utils.HttpUtils.getWithHeaderAndQuery
 import bot.tx.wsure.top.utils.JsonUtils.jsonToObjectOrNull
+import bot.tx.wsure.top.utils.WeiBoUtils.filterMblogContext
 import bot.tx.wsure.top.utils.WeiBoUtils.toUnofficialMessageText
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,26 +33,38 @@ object WeiBoUtils {
 
     val WBFacePrefix = Regex("<span.+?(?=\\[)")
     val WBFaceSuffix = Regex("(?<=]).+?span>")
+    val WBAHrefPrefix = Regex("\\<a.*?surl-text\\\\\">")
+    val WBAHrefSuffix = "</span></a>"
+    val WBBR = Regex("\\<br\\s*\\/>")
     val WBImagePrefix = "https://wx3.sinaimg.cn/large/"
     val WBDetailPrefix = "https://m.weibo.cn/detail/"
     fun Mblog.toUnofficialMessageText():String{
         val user = this.user.screenName
         val time = this.createdAt.format(TimeUtils.DATE_FORMATTER)
-        val text = this.text.replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
+        val text = this.text.filterMblogContext()
         val images = this.picIds.joinToString("") { "$WBImagePrefix$it".urlToImageCode() }
-        return "${this.user.profileImageUrl.urlToImageCode()}[$user]\n" +
+        return "${this.user.profileImageUrl.urlToImageCode()}[$user]${if (this.isTop != null && this.isTop == 1)"[顶置↑]" else ""}\n" +
                 "[$time by ${this.source}]\n\n" +
                 "$text\n" +
-                "${if(this.retweetedStatus == null)"" else "<转发：" +this.retweetedStatus.retweetedMblogToUnofficialMessageText()}>\n" +
+                "${if(this.retweetedStatus == null)"" else "<转发：" +this.retweetedStatus.retweetedMblogToUnofficialMessageText() + ">"}\n" +
                 "$images\n" +
                 "${WBDetailPrefix+this.id} "
     }
     fun Mblog.retweetedMblogToUnofficialMessageText():String{
         val user = this.user.screenName
         val time = this.createdAt.format(TimeUtils.DATE_FORMATTER)
-        val text = this.text.replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
+        val text = this.text.filterMblogContext()
         val images = this.picIds.joinToString("") { "$WBImagePrefix$it".urlToImageCode() }
         return "@${user}:${text}\n$images"
+    }
+
+    fun String.filterMblogContext():String{
+        return this
+            .replace(WBBR,"\n")
+            .replace(WBAHrefSuffix," ")
+            .replace(WBFacePrefix,"")
+            .replace(WBFaceSuffix,"")
+            .replace(WBAHrefPrefix,"")
     }
 
 }

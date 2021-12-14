@@ -73,10 +73,12 @@ fun initConfig(): Config {
 
 fun initCacheConfig(config: Config){
     // init wb_config
+    MapDBManager.WB_CONFIG.cache.clear()
     config.toWbConfig().onEach {
         MapDBManager.WB_CONFIG[it.key] = it.value
     }
     // init bl_config
+    MapDBManager.BL_CONFIG.cache.clear()
     config.toBLConfig().onEach {
         MapDBManager.BL_CONFIG[it.key] = it.value
     }

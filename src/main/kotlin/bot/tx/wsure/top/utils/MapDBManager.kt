@@ -3,7 +3,7 @@ package bot.tx.wsure.top.utils
 import bot.tx.wsure.top.component.unofficial.YbbTrain
 import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.config.Global.CACHE_PATH
-import bot.tx.wsure.top.spider.dtos.Mblog
+import bot.tx.wsure.top.spider.dtos.weibo.Mblog
 import bot.tx.wsure.top.utils.MapDBUtils.getCacheByName
 import org.mapdb.DBMaker.fileDB
 import top.wsure.bililiver.bililiver.dtos.api.space.LiveRoom
@@ -28,6 +28,8 @@ object MapDBManager {
     val WB_CONFIG: MapDBWarp<String,List<ChannelConfig>> = MapDBWarp(db,getCacheByName(db,"WB_CONFIG"))
 
     val WB_CACHE: MapDBWarp<String,List<Mblog>> = MapDBWarp(db,getCacheByName(db,"WB_CACHE"))
+
+    val WB_TOP: MapDBWarp<String,List<Mblog>> = MapDBWarp(db,getCacheByName(db,"WB_TOP"))
 
     val BL_CONFIG: MapDBWarp<String,List<ChannelConfig>> = MapDBWarp(db,getCacheByName(db,"BL_CONFIG"))
 

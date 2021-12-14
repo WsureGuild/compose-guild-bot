@@ -7,6 +7,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -19,6 +20,15 @@ object TimeUtils {
 
     fun todayString(): String {
         return LocalDateTime.now().format(DAY_FORMATTER)
+    }
+
+    fun Long.toLocalDateTime():LocalDateTime{
+        val instant = if(this.toString().length > 10) Instant.ofEpochMilli(this)
+        else Instant.ofEpochSecond(this)
+        return  LocalDateTime.ofInstant(
+            instant,
+            TimeZone.getDefault().toZoneId()
+        )
     }
 
 }
