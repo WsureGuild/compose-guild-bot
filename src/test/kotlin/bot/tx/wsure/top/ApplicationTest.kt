@@ -1,7 +1,9 @@
 package bot.tx.wsure.top
 
+import bot.tx.wsure.top.component.TestResponse
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BaseCronJob
+import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.utils.EhcacheManager
 import bot.tx.wsure.top.utils.FileUtils
 import bot.tx.wsure.top.utils.MapDBManager
@@ -178,5 +180,12 @@ class ApplicationTest {
             TimeZone.getDefault().toZoneId()
         )
         println(triggerTime.format(DATE_FORMATTER))
+    }
+
+    @Test
+    fun testGocq(){
+        val client = UnOfficialBotClient(listOf(TestResponse()))
+
+        runBlocking { delay(999999999999) }
     }
 }

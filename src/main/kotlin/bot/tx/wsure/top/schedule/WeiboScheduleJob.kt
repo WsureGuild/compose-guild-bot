@@ -4,7 +4,7 @@ import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.spider.dtos.weibo.Mblog
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
-import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsgAction
+import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsg
 import bot.tx.wsure.top.unofficial.enums.ActionEnums
 import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import bot.tx.wsure.top.utils.MapDBManager
@@ -59,7 +59,7 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
         this.forEach { guild ->
             val msg = mblogs.joinToString("\n") { mblog ->
                 BaseAction(ActionEnums.SEND_GUILD_CHANNEL_MSG,
-                    SendGuildChannelMsgAction(guild.guildId,guild.channelId,mblog.toUnofficialMessageText())
+                    SendGuildChannelMsg(guild.guildId,guild.channelId,mblog.toUnofficialMessageText())
                 ).objectToJson()
             }
             sender.sendMessage(msg)

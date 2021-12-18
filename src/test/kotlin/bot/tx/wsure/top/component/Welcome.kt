@@ -1,4 +1,4 @@
-package bot.tx.wsure.top.component.bililiver
+package bot.tx.wsure.top.component
 
 import top.wsure.bililiver.bililiver.BiliLiverEvent
 import top.wsure.bililiver.bililiver.api.BiliLiverApi

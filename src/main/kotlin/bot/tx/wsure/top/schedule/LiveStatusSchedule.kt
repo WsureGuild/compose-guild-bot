@@ -4,7 +4,7 @@ import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.unofficial.UnOfficialBotClient
 import bot.tx.wsure.top.unofficial.dtos.CQCode.urlToImageCode
 import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
-import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsgAction
+import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsg
 import bot.tx.wsure.top.unofficial.enums.ActionEnums
 import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import bot.tx.wsure.top.utils.MapDBManager
@@ -39,10 +39,10 @@ object LiveStatusSchedule : BaseCronJob("LiveStatusSchedule", "0 0/1 * * * ?") {
         }
     }
 
-    fun LiveRoom.toUnofficialGuildMessage(channelConfig: ChannelConfig):BaseAction<SendGuildChannelMsgAction>{
+    fun LiveRoom.toUnofficialGuildMessage(channelConfig: ChannelConfig):BaseAction<SendGuildChannelMsg>{
         return BaseAction(
             ActionEnums.SEND_GUILD_CHANNEL_MSG,
-            SendGuildChannelMsgAction(channelConfig.guildId,channelConfig.channelId,this.toUnofficialMessageText())
+            SendGuildChannelMsg(channelConfig.guildId,channelConfig.channelId,this.toUnofficialMessageText())
         )
     }
 

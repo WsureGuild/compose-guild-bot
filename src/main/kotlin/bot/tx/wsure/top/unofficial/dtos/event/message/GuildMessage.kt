@@ -1,6 +1,6 @@
 package bot.tx.wsure.top.unofficial.dtos.event.message
 
-import bot.tx.wsure.top.unofficial.dtos.Sender
+import bot.tx.wsure.top.unofficial.dtos.GuildSender
 import bot.tx.wsure.top.unofficial.dtos.event.BaseEventInterface
 import bot.tx.wsure.top.unofficial.enums.MessageTypeEnums
 import kotlinx.serialization.SerialName
@@ -24,7 +24,7 @@ data class GuildMessage(
     @SerialName("self_tiny_id")
     val selfTinyId: Long,
     @SerialName("sender")
-    val sender: Sender,
+    val sender: GuildSender,
     @SerialName("sub_type")
     val subType: String,
     @SerialName("time")

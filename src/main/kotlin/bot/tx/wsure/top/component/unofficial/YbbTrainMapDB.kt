@@ -25,10 +25,10 @@ class YbbTrainMapDB(val ybbConfig: Map<Long, List<ChannelConfig>>) : UnOfficialB
                 if (message.addDailyMute(speed)) {
                     val res =
                         message.toSendGuildChannelMsgAction("${message.sender.nickname},你今天的小火车速度为${speed}km/h,看我把你绑在铁轨上")
-                    sender.sendMessage(res)
+                    sender.sendGuildChannelMsgAsync(res)
                 } else {
                     val res = message.toSendGuildChannelMsgAction("${message.sender.nickname},你今天已经被创过了,明天再来吧")
-                    sender.sendMessage(res)
+                    sender.sendGuildChannelMsgAsync(res)
                 }
             }
             if (message.message == "竞速榜") {
@@ -44,10 +44,10 @@ class YbbTrainMapDB(val ybbConfig: Map<Long, List<ChannelConfig>>) : UnOfficialB
                             )
                         }km/h"
                     })
-                    sender.sendMessage(res)
+                    sender.sendGuildChannelMsgAsync(res)
                 } else {
                     val res = message.toSendGuildChannelMsgAction("今日无人召唤小火车")
-                    sender.sendMessage(res)
+                    sender.sendGuildChannelMsgAsync(res)
                 }
             }
         }

@@ -60,6 +60,18 @@
       "description": "小可频SC",
       "guildId": 19995411637241900,
       "channelId": 1542326
+    },
+    {
+      "name": "xiaoke_dynamic",
+      "description": "小可频动态",
+      "guildId": 19995411637241900,
+      "channelId": 1468457
+    },
+    {
+      "name": "xiaoke_notify",
+      "description": "小可频通知",
+      "guildId": 19995411637241900,
+      "channelId": 1467859
     }
   ],
   "superChatConfig": [
@@ -92,6 +104,14 @@
     {
       "key": "2203177060",
       "channelName":"azu_dynamic"
+    },
+    {
+      "key": "6377117491",
+      "channelName":"xiaoke_dynamic"
+    },
+    {
+      "key": "2085108062",
+      "channelName":"nanami_ybb"
     }
   ],
   "bililiverConfig": [
@@ -100,8 +120,8 @@
       "channelName":"nanami_notify"
     },
     {
-      "key": "7706705",
-      "channelName":"azu_notify"
+      "key": "14387072",
+      "channelName":"xiaoke_notify"
     },
     {
       "key": "777656",
