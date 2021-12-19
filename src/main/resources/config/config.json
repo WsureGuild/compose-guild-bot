@@ -3,9 +3,9 @@
   "channels": [
     {
       "name": "nanami_notify",
-      "description": "海频公告",
+      "description": "开播通知",
       "guildId": 6000051636714649,
-      "channelId": 1328438
+      "channelId": 2072944
     },
     {
       "name": "nanami_sc",

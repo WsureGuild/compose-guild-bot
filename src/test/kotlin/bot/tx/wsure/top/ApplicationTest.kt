@@ -56,11 +56,23 @@ class ApplicationTest {
     }
     @Test
     fun testOkhttp(){
-        mutableSetOf( "14475263","14343955","22582590","23208247","725364","23612283","23256987").map {
+        val listOfRTV = listOf(
+        "23260993",
+        "21672023",
+        "8721033",
+        "22778596",
+        "21484828",
+        "21403601",
+        "33942",
+        "22470208",
+        "22605464",
+        "21452505",)
+
+        listOfRTV.onEach {
             BiliLiverConsole(it)
         }
 
-        runBlocking { delay(99999999999999) }
+        runBlocking { delay(999999999999999999L) }
 //        OfficialBotApi.delRoles(Global.CONFIG.devGuild.id,"15112013223705719381","10014689")
     }
 
