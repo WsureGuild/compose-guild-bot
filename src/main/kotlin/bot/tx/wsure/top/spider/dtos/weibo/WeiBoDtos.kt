@@ -61,6 +61,23 @@ data class Mblog(
 
     @SerialName("title")
     val title: Title? = null,
+
+    @SerialName("page_info")
+    val pageInfo:PageInfo? = null
+)
+@Serializable
+data class PageInfo(
+    @SerialName("page_pic")
+    val pagePic: PagePic,
+    @SerialName("type")
+    val type: String,
+    @SerialName("url_ori")
+    val urlOri: String?,
+)
+@Serializable
+data class PagePic(
+    @SerialName("url")
+    val url: String,
 )
 
 @Serializable

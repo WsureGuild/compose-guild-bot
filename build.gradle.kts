@@ -55,6 +55,8 @@ dependencies {
     implementation("it.justwrote:kjob-core:0.2.0")
     implementation("it.justwrote:kjob-kron:0.2.0")
 
+    implementation("it.skrape:skrapeit:1.1.5")
+
     implementation("it.justwrote:kjob-inmem:0.2.0") // for in-memory 'persistence' (e.g. tests)
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
