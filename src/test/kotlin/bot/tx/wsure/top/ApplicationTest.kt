@@ -12,10 +12,13 @@ import bot.tx.wsure.top.utils.WeiBoUtils
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFacePrefix
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFaceSuffix
 import bot.tx.wsure.top.utils.WeiBoUtils.filterMblogContext
+import bot.tx.wsure.top.utils.WeiBoUtils.toUnofficialMessageText
 import it.justwrote.kjob.InMem
 import it.justwrote.kjob.kjob
 import it.justwrote.kjob.kron.Kron
 import it.justwrote.kjob.kron.KronModule
+import it.skrape.core.htmlDocument
+import it.skrape.fetcher.skrape
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.decodeHex
@@ -26,6 +29,7 @@ import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackage
 import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackageList
 import top.wsure.bililiver.bililiver.BiliLiverConsole
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
+import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -165,15 +169,33 @@ class ApplicationTest {
     }
 
     @Test
+    fun testRegex2(){
+        val text = "2021-12-25 02:47:33.057 [OkHttp https://hw-gz-live-comet-04.chat.bilibili.com/...] INFO  bot.tx.wsure.top.unofficial.UnOfficialBotClient - send text message {\"action\":\"send_guild_channel_msg\",\"params\":{\"guild_id\":6000051636714649,\"channel_id\":1370732,\"message\":\" - \$ \$ \$ - \\n「`七海Nana7mi`收到了`-エクシア-`发送了30块 SC:`海海圣诞快乐！去听了你的圣诞音声，海海好可爱我好喜欢！谢谢你能在圣诞节来陪我们！`」\"},\"echo\":\"5745a020-9c86-4d71-802d-ecf7e4190e13\"}"
+        val regex1 = Regex("(?<=:\\d{2}).+?(?=「)")
+        val regex2 = Regex("(?<=」).+?$")
+        println(text.replace(regex1,"").replace(regex2,""))
+    }
+
+    @Test
     fun testWeibo(){
         val text = "派友JeremyMcFake：<br />从第0赛季起，<br />我就在这了，<br />玩了2000小时但还是玩成这样<br /><a  href=\\\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23Apex%E7%AC%AC11%E8%B5%9B%E5%AD%A3%23&extparam=%23Apex%E7%AC%AC11%E8%B5%9B%E5%AD%A3%23&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class=\\\"surl-text\\\">#Apex第11赛季#</span></a><a  href=\\\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23Apex%E8%8B%B1%E9%9B%84%23&extparam=%23Apex%E8%8B%B1%E9%9B%84%23&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class=\\\"surl-text\\\">#Apex英雄#</span></a> <br />大部分表示，抓钩那里，血压真的上来了<span class=\\\"url-icon\\\"><img alt=[二哈] src=\\\"https://h5.sinaimg.cn/m/emoticon/icon/others/d_erha-139d0e07bd.png\\\" style=\\\"width:1em; height:1em;\\\" /></span><br /><a  href=\\\"https://m.weibo.cn/p/index?extparam=APEX%E8%8B%B1%E9%9B%84&containerid=1008089eedf76d192882bdc668060ccd90621e&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class='url-icon'><img style='width: 1rem;height: 1rem' src='https://n.sinaimg.cn/photo/5213b46e/20180926/timeline_card_small_super_default.png'></span><span class=\\\"surl-text\\\">APEX英雄</span></a> <a data-url=\\\"http://t.cn/A6x8TN4I\\\" href=\\\"https://video.weibo.com/show?fid=1034:4714243665362961\\\" data-hide=\\\"\\\"><span class='url-icon'><img style='width: 1rem;height: 1rem' src='https://h5.sinaimg.cn/upload/2015/09/25/3/timeline_card_small_video_default.png'></span><span class=\\\"surl-text\\\">APEX英雄的微博视频</span></a> "
         val res = text.replace(Regex("\\<br\\s*\\/>"),"\n")
             .replace("</span></a>","")
 //            .replace(Regex("\\<a.+?>#"),"#").replace(Regex("#\\</.*?a>"),"# ")
             .replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
-            .replace(Regex("\\<a.*?surl-text\\\\\">"),"")
         println(res)
         println(text.filterMblogContext())
+        val cookie = ""
+        println(" ------------------------- -")
+        val uidList = listOf("7198559139","2203177060","6377117491","2085108062")
+        uidList.onEach { uid ->
+            val wbList = WeiBoUtils.getMLogByUid2(uid,cookie)
+            wbList.onEach { mblog ->
+
+                println(mblog.toUnofficialMessageText())
+                println(" ------------------------- -")
+            }
+        }
     }
 
     @Test
@@ -199,5 +221,23 @@ class ApplicationTest {
         val client = UnOfficialBotClient(listOf(TestResponse()))
 
         runBlocking { delay(999999999999) }
+    }
+
+    @Test
+    fun getSCLogger(){
+        val regex1 = Regex("(?<=:\\d{2}).+?(?=「)")
+        val regex2 = Regex("(?<=」).+?$")
+        val f1 = Path("logs/log_info.log").toAbsolutePath().toFile()
+        val f2 = Path("logs/log_info_sc.txt").toAbsolutePath().toFile()
+        f2.bufferedWriter().use { output ->
+            f1.readLines().forEach {
+                val he = "- \$ \$ \$ - \\n「`七海Nana7mi`收到了`"
+                if (it.contains(he)) {
+                    output.write(it.replace(regex1,"").replace(regex2,""))
+                    output.newLine()
+                    output.flush()
+                }
+            }
+        }
     }
 }

@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "bot.tx.wsure.top"
-version = "0.0.1"
+version = "0.0.2"
 application {
     mainClass.set("bot.tx.wsure.top.ApplicationKt")
 }
