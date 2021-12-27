@@ -6,19 +6,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Config(
     @SerialName("channels")
-    val channels : List<ChannelConfig>,
+    val channels : List<ChannelConfig> = emptyList(),
 
     @SerialName("ybbTranConfig")
-    val ybbTranConfig: List<String>,
+    val ybbTranConfig: List<String> = emptyList(),
     @SerialName("superChatConfig")
-    val superChatConfig: List<CommConfig>,
+    val superChatConfig: List<CommConfig> = emptyList(),
     @SerialName("weiboConfig")
-    val weiboConfig : List<CommConfig>,
+    val weiboConfig : List<CommConfig> = emptyList(),
     @SerialName("bililiverConfig")
-    val bililiverConfig : List<CommConfig>,
+    val bililiverConfig : List<CommConfig> = emptyList(),
 
     @SerialName("jobConfig")
-    val jobConfig : Map<String,Map<String,String>>,
+    val jobConfig : Map<String,Map<String,String>> = emptyMap(),
 ){
     val channelsMap = channels.associateBy { it.name }
     fun List<String>.channelNameToConfig():List<ChannelConfig>{

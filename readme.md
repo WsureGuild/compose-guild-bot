@@ -151,3 +151,8 @@
    ```
    2. 获取微博cookie [`获取cookie教程`](https://github.com/dataabc/weiboSpider/blob/master/docs/cookie.md)
    3. 获取微博uid [`获取uid教程`](https://github.com/dataabc/weiboSpider/blob/master/docs/userid.md)
+4. 后续版本如果添加了新功能，可能会对config结构产生变化，请在备份原config的情况下按照文档构建新的config
+# 二次开发注意事项
+1. 本项目依赖[`wsure-bililiver`](https://github.com/WsureDev/wsure-bililiver) 一个自己手搓的直播ws链接工具，请在二开时同时clone此项目
+2. 打包使用`shadowJar`
+3. 后续会迁移至官方私域bot，届时将会对项目结构进行较大调整
