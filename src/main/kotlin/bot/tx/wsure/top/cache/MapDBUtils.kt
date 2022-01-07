@@ -1,4 +1,4 @@
-package bot.tx.wsure.top.utils
+package bot.tx.wsure.top.cache
 
 import io.ktor.serialization.*
 import kotlinx.coroutines.runBlocking

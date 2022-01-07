@@ -1,6 +1,6 @@
 package bot.tx.wsure.top.utils
 
-import bot.tx.wsure.top.utils.JsonUtils.jsonToObject
+import top.wsure.guild.common.utils.JsonUtils.jsonToObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File

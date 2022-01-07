@@ -2,12 +2,12 @@ package bot.tx.wsure.top.component.unofficial
 
 import bot.tx.wsure.top.component.unofficial.YbbTrain.TopRecord.Companion.addItem
 import bot.tx.wsure.top.config.ChannelConfig
-import bot.tx.wsure.top.unofficial.UnofficialMessageSender
-import bot.tx.wsure.top.unofficial.dtos.api.toSendGuildChannelMsgAction
-import bot.tx.wsure.top.unofficial.dtos.event.message.GuildMessage
-import bot.tx.wsure.top.unofficial.intf.UnOfficialBotEvent
-import bot.tx.wsure.top.utils.MapDBManager
-import bot.tx.wsure.top.utils.MapDBWarp
+import top.wsure.guild.unofficial.UnofficialMessageSender
+import top.wsure.guild.unofficial.dtos.api.toSendGuildChannelMsgAction
+import top.wsure.guild.unofficial.dtos.event.message.GuildMessage
+import top.wsure.guild.unofficial.intf.UnOfficialBotEvent
+import bot.tx.wsure.top.cache.MapDBManager
+import bot.tx.wsure.top.cache.MapDBWarp
 import bot.tx.wsure.top.utils.TimeUtils.todayString
 
 /*
@@ -15,7 +15,7 @@ import bot.tx.wsure.top.utils.TimeUtils.todayString
  */
 class YbbTrainMapDB(val ybbConfig: Map<Long, List<ChannelConfig>>) : UnOfficialBotEvent() {
 
-    override suspend fun onGuildMessage(sender: UnofficialMessageSender, message: GuildMessage) {
+    override suspend fun onGuildMessage(message: GuildMessage) {
 
         val channel = ybbConfig[message.guildId]
         if (channel == null || channel.isEmpty() || channel.map { it.channelId }.contains(message.channelId)) {

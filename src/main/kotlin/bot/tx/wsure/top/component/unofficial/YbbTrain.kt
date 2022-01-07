@@ -2,11 +2,10 @@ package bot.tx.wsure.top.component.unofficial
 
 import bot.tx.wsure.top.component.unofficial.YbbTrain.TopRecord.Companion.addItem
 import bot.tx.wsure.top.config.YbbTranConfig
-import bot.tx.wsure.top.unofficial.UnofficialMessageSender
-import bot.tx.wsure.top.unofficial.dtos.api.toSendGuildChannelMsgAction
-import bot.tx.wsure.top.unofficial.dtos.event.message.GuildMessage
-import bot.tx.wsure.top.unofficial.intf.UnOfficialBotEvent
-import bot.tx.wsure.top.utils.EhcacheManager
+import top.wsure.guild.unofficial.dtos.api.toSendGuildChannelMsgAction
+import top.wsure.guild.unofficial.dtos.event.message.GuildMessage
+import top.wsure.guild.unofficial.intf.UnOfficialBotEvent
+import bot.tx.wsure.top.cache.EhcacheManager
 import bot.tx.wsure.top.utils.TimeUtils.todayString
 import kotlinx.serialization.Serializable
 import org.ehcache.Cache
@@ -16,7 +15,7 @@ import org.ehcache.Cache
  */
 class YbbTrain(val ybbConfig: Map<Long, List<YbbTranConfig>>) : UnOfficialBotEvent() {
 
-    override suspend fun onGuildMessage(sender: UnofficialMessageSender, message: GuildMessage) {
+    override suspend fun onGuildMessage(message: GuildMessage) {
 
         val channel = ybbConfig[ message.guildId]
         if(channel == null || channel.isEmpty() || channel.map { it.channelId }.contains(message.channelId)){

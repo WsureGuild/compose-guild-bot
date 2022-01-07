@@ -1,8 +1,6 @@
 package bot.tx.wsure.top.spider.dtos.bili
 import bot.tx.wsure.top.spider.dtos.weibo.User
 import bot.tx.wsure.top.spider.dtos.weibo.WBCard
-import bot.tx.wsure.top.utils.JsonUtils.jsonToObject
-import bot.tx.wsure.top.utils.JsonUtils.objectToJson
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
@@ -12,6 +10,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import top.wsure.guild.common.utils.JsonUtils.jsonToObject
+import top.wsure.guild.common.utils.JsonUtils.objectToJson
 
 
 @Serializable
@@ -163,8 +163,6 @@ data class Vip(
 
 @Serializable
 data class Desc(
-    @SerialName("acl")
-    val acl: Int? = null,
     @SerialName("bvid")
     val bvid: String? = null,
     @SerialName("comment")
@@ -343,28 +341,10 @@ data class Previous(
 
 @Serializable
 data class UserProfile(
-    @SerialName("card")
-    val card: CardX? = null,
     @SerialName("decorate_card")
     val decorateCard: DecorateCard? = null,
     @SerialName("info")
     val info: Info? = null,
-    @SerialName("level_info")
-    val levelInfo: LevelInfo? = null,
-    @SerialName("pendant")
-    val pendant: Pendant? = null,
-    @SerialName("rank")
-    val rank: String? = null,
-    @SerialName("sign")
-    val sign: String? = null,
-    @SerialName("vip")
-    val vip: Vip? = null
-)
-
-@Serializable
-data class CardX(
-    @SerialName("official_verify")
-    val officialVerify: OfficialVerify? = null
 )
 
 @Serializable

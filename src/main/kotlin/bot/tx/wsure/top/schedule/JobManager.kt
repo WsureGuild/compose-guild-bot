@@ -1,6 +1,6 @@
 package bot.tx.wsure.top.schedule
 
-import bot.tx.wsure.top.unofficial.UnOfficialBotClient
+import top.wsure.guild.unofficial.UnofficialMessageSender
 import it.justwrote.kjob.InMem
 import it.justwrote.kjob.kjob
 import it.justwrote.kjob.kron.Kron
@@ -8,7 +8,7 @@ import it.justwrote.kjob.kron.KronModule
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class JobManager(val config:Map<String,Map<String,String>>,val sender: UnOfficialBotClient? = null) {
+class JobManager(val config:Map<String,Map<String,String>>,val sender: UnofficialMessageSender? = null) {
     val logger: Logger = LoggerFactory.getLogger(javaClass)
     val kjob by lazy {
         kjob(InMem) {

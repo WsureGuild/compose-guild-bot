@@ -1,4 +1,4 @@
-package bot.tx.wsure.top.utils
+package bot.tx.wsure.top.cache
 
 import bot.tx.wsure.top.component.unofficial.YbbTrain
 import kotlinx.serialization.Serializable
@@ -25,7 +25,8 @@ object EhcacheManager : Closeable {
                     .heap(10, EntryUnit.ENTRIES)
                     .offheap(1, MemoryUnit.MB)
                     .disk(20, MemoryUnit.MB, true)
-            ).withValueSerializer(ehcacheCborSerializer()
+            ).withValueSerializer(
+                ehcacheCborSerializer()
             )
         )
         .withCache(

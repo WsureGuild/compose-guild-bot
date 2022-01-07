@@ -1,22 +1,22 @@
 package bot.tx.wsure.top.schedule
 
+import bot.tx.wsure.top.cache.MapDBManager
 import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.spider.dtos.weibo.Mblog
-import bot.tx.wsure.top.unofficial.UnOfficialBotClient
-import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
-import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsg
-import bot.tx.wsure.top.unofficial.enums.ActionEnums
-import bot.tx.wsure.top.utils.JsonUtils.objectToJson
-import bot.tx.wsure.top.utils.MapDBManager
+import top.wsure.guild.unofficial.dtos.api.BaseAction
+import top.wsure.guild.unofficial.dtos.api.SendGuildChannelMsg
+import top.wsure.guild.unofficial.enums.ActionEnums
 import bot.tx.wsure.top.utils.WeiBoUtils
 import bot.tx.wsure.top.utils.WeiBoUtils.toUnofficialMessageText
 import kotlinx.coroutines.delay
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import top.wsure.guild.common.utils.JsonUtils.objectToJson
+import top.wsure.guild.unofficial.UnofficialMessageSender
 
 object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
     val logger: Logger = LoggerFactory.getLogger(javaClass)
-    override suspend fun execute(params: Map<String, String>, sender: UnOfficialBotClient?) {
+    override suspend fun execute(params: Map<String, String>, sender: UnofficialMessageSender?) {
         logger.info("${this.name} - params：${params.objectToJson()}")
         params["cookie"]?.also { cookie ->
             logger.info("${this.name} - read cookie success")
@@ -26,7 +26,7 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
                 if( entry.key == null || entry.value == null) return@onEach
 
                 logger.info("${this.name} - start load :${entry.key}")
-                val wbList = WeiBoUtils.getMLogByUid2(entry.key!!,cookie)
+                val wbList = WeiBoUtils.getMLogByUid(entry.key!!,cookie)
                 if(wbList.isNotEmpty()){
                     val topList = wbList.filter { it.isTop != null && it.isTop == 1 }
                     val oldTopList =  MapDBManager.WB_TOP[entry.key!!, { mutableListOf() }].value
@@ -55,7 +55,7 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
         }
     }
 
-    fun List<ChannelConfig>.sendMblogMessage(sender: UnOfficialBotClient, mblogs: List<Mblog>){
+    fun List<ChannelConfig>.sendMblogMessage(sender: UnofficialMessageSender, mblogs: List<Mblog>){
         this.forEach { guild ->
             val msg = mblogs.joinToString("\n") { mblog ->
                 BaseAction(ActionEnums.SEND_GUILD_CHANNEL_MSG,

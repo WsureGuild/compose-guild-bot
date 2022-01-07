@@ -25,6 +25,8 @@ repositories {
 dependencies {
     //todo push to mavenCenter : https://github.com/WsureDev/wsure-bililiver
     implementation("top.wsure.bililiver:wsure-bililiver:1.0-SNAPSHOT")
+    implementation("top.wsure.guild:go-cqhttp-guild-bot:1.0-SNAPSHOT")
+    implementation("top.wsure.guild:qq-official-guild-bot:1.0-SNAPSHOT")
 
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")

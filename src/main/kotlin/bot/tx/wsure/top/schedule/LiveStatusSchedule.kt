@@ -1,21 +1,21 @@
 package bot.tx.wsure.top.schedule
 
 import bot.tx.wsure.top.config.ChannelConfig
-import bot.tx.wsure.top.unofficial.UnOfficialBotClient
-import bot.tx.wsure.top.unofficial.dtos.CQCode.urlToImageCode
-import bot.tx.wsure.top.unofficial.dtos.api.BaseAction
-import bot.tx.wsure.top.unofficial.dtos.api.SendGuildChannelMsg
-import bot.tx.wsure.top.unofficial.enums.ActionEnums
-import bot.tx.wsure.top.utils.JsonUtils.objectToJson
-import bot.tx.wsure.top.utils.MapDBManager
+import top.wsure.guild.unofficial.UnofficialMessageSender
+import top.wsure.guild.unofficial.dtos.CQCode.urlToImageCode
+import top.wsure.guild.unofficial.dtos.api.BaseAction
+import top.wsure.guild.unofficial.dtos.api.SendGuildChannelMsg
+import top.wsure.guild.unofficial.enums.ActionEnums
+import bot.tx.wsure.top.cache.MapDBManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
 import top.wsure.bililiver.bililiver.dtos.api.space.LiveRoom
+import top.wsure.guild.common.utils.JsonUtils.objectToJson
 
 object LiveStatusSchedule : BaseCronJob("LiveStatusSchedule", "0 0/1 * * * ?") {
     val logger: Logger = LoggerFactory.getLogger(javaClass)
-    override suspend fun execute(params: Map<String, String>, sender: UnOfficialBotClient?) {
+    override suspend fun execute(params: Map<String, String>, sender: UnofficialMessageSender?) {
         val blConfig = MapDBManager.BL_CONFIG.cache
         logger.info("${this.name} - read BiliLiverConfig :${blConfig.entries.joinToString { "${it.key}:${it.value}" }}")
         blConfig.entries.onEach { entry ->

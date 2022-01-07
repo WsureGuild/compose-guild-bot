@@ -3,10 +3,9 @@ package bot.tx.wsure.top
 import bot.tx.wsure.top.component.TestResponse
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BaseCronJob
-import bot.tx.wsure.top.unofficial.UnOfficialBotClient
-import bot.tx.wsure.top.utils.EhcacheManager
+import bot.tx.wsure.top.cache.EhcacheManager
 import bot.tx.wsure.top.utils.FileUtils
-import bot.tx.wsure.top.utils.MapDBManager
+import bot.tx.wsure.top.cache.MapDBManager
 import bot.tx.wsure.top.utils.TimeUtils.DATE_FORMATTER
 import bot.tx.wsure.top.utils.WeiBoUtils
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFacePrefix
@@ -17,8 +16,6 @@ import it.justwrote.kjob.InMem
 import it.justwrote.kjob.kjob
 import it.justwrote.kjob.kron.Kron
 import it.justwrote.kjob.kron.KronModule
-import it.skrape.core.htmlDocument
-import it.skrape.fetcher.skrape
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.decodeHex
@@ -29,7 +26,7 @@ import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackage
 import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackageList
 import top.wsure.bililiver.bililiver.BiliLiverConsole
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
-import java.io.File
+import top.wsure.guild.unofficial.UnOfficialClient
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -42,7 +39,7 @@ class ApplicationTest {
 
     @Test
     fun testJson() = runBlocking {
-        val roles =  WeiBoUtils.getMLogByUid(7198559139L,"")
+        val roles =  WeiBoUtils.getMLogByUid("7198559139","")
         println(roles)
     }
 
@@ -189,7 +186,7 @@ class ApplicationTest {
         println(" ------------------------- -")
         val uidList = listOf("7198559139","2203177060","6377117491","2085108062")
         uidList.onEach { uid ->
-            val wbList = WeiBoUtils.getMLogByUid2(uid,cookie)
+            val wbList = WeiBoUtils.getMLogByUid(uid,cookie)
             wbList.onEach { mblog ->
 
                 println(mblog.toUnofficialMessageText())
@@ -218,7 +215,7 @@ class ApplicationTest {
 
     @Test
     fun testGocq(){
-        val client = UnOfficialBotClient(listOf(TestResponse()))
+        val client = UnOfficialClient(listOf(TestResponse()))
 
         runBlocking { delay(999999999999) }
     }
