@@ -54,7 +54,7 @@ fun bootBot(){
     if (useBL) {
         scConfig.onEach { room ->
             BiliLiverConsole(room.key, mutableListOf(
-                SuperChatNotify(room.value, unOfficialBotClient.sender)
+                SuperChatNotify(room.value, unOfficialBotClient)
             ))
         }
 
@@ -73,12 +73,12 @@ fun bootBot(){
     list.onEach { room ->
         BiliLiverConsole(
             room, mutableListOf(
-                VtrGiftLotteryNotify(scConfig.values.flatten(), unOfficialBotClient.sender)
+                VtrGiftLotteryNotify(scConfig.values.flatten(), unOfficialBotClient)
             )
         )
     }
 
-    JobManager(config.jobConfig,unOfficialBotClient.sender).start()
+    JobManager(config.jobConfig,unOfficialBotClient).start()
 }
 
 fun initConfig(): Config {

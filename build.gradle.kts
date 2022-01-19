@@ -58,6 +58,8 @@ dependencies {
     implementation("it.justwrote:kjob-kron:0.2.0")
 
     implementation("it.skrape:skrapeit:1.1.5")
+    implementation("org.seleniumhq.selenium:selenium-java:4.1.1")
+    implementation("io.github.bonigarcia:webdrivermanager:5.0.3")
 
     implementation("it.justwrote:kjob-inmem:0.2.0") // for in-memory 'persistence' (e.g. tests)
 

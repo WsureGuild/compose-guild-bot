@@ -10,14 +10,14 @@ class Welcome : BiliLiverEvent(){
     private val cookie = ""
     val jct = ""
 
-    override fun onInteractWord(interactWord: InteractWord) {
+    override suspend fun onInteractWord(interactWord: InteractWord) {
         // send welcome
         val msg = "欢迎${interactWord.uname}进入直播间，爹"
         val danmu = Danmu(msg,room.roomid,jct)
         BiliLiverApi.sendDanmu(danmu,cookie)
     }
 
-    override fun onEntryEffect(entryEffect: EntryEffect) {
+    override suspend fun onEntryEffect(entryEffect: EntryEffect) {
         val msg = "${entryEffect.copyWriting.replace("欢迎 \\u003c%","").replace("%\\u003e 进入直播间","")}爹你回来啦"
         val danmu = Danmu(msg,room.roomid,jct)
         BiliLiverApi.sendDanmu(danmu,cookie)

@@ -1,21 +1,18 @@
 package bot.tx.wsure.top.schedule
 
-import bot.tx.wsure.top.config.ChannelConfig
-import top.wsure.guild.unofficial.UnofficialMessageSender
-import top.wsure.guild.unofficial.dtos.CQCode.urlToImageCode
-import top.wsure.guild.unofficial.dtos.api.BaseAction
-import top.wsure.guild.unofficial.dtos.api.SendGuildChannelMsg
-import top.wsure.guild.unofficial.enums.ActionEnums
 import bot.tx.wsure.top.cache.MapDBManager
+import bot.tx.wsure.top.config.ChannelConfig
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
 import top.wsure.bililiver.bililiver.dtos.api.space.LiveRoom
-import top.wsure.guild.common.utils.JsonUtils.objectToJson
+import top.wsure.guild.unofficial.UnOfficialClient
+import top.wsure.guild.unofficial.dtos.CQCode.urlToImageCode
+import top.wsure.guild.unofficial.dtos.api.SendGuildChannelMsg
 
 object LiveStatusSchedule : BaseCronJob("LiveStatusSchedule", "0 0/1 * * * ?") {
     val logger: Logger = LoggerFactory.getLogger(javaClass)
-    override suspend fun execute(params: Map<String, String>, sender: UnofficialMessageSender?) {
+    override suspend fun execute(params: Map<String, String>, client: UnOfficialClient?) {
         val blConfig = MapDBManager.BL_CONFIG.cache
         logger.info("${this.name} - read BiliLiverConfig :${blConfig.entries.joinToString { "${it.key}:${it.value}" }}")
         blConfig.entries.onEach { entry ->
@@ -31,7 +28,7 @@ object LiveStatusSchedule : BaseCronJob("LiveStatusSchedule", "0 0/1 * * * ?") {
                 val cache = MapDBManager.BL_CACHE[entry.key!!]?.value
                 if (cache != null && cache.liveStatus == 0){
                     entry.value?.forEach {
-                        sender?.sendMessage(liveRoom.toUnofficialGuildMessage(it).objectToJson())
+                        client?.sender?.sendGuildChannelMsgAsync(liveRoom.toUnofficialGuildMessage(it))
                     }
                 }
             }
@@ -39,11 +36,8 @@ object LiveStatusSchedule : BaseCronJob("LiveStatusSchedule", "0 0/1 * * * ?") {
         }
     }
 
-    fun LiveRoom.toUnofficialGuildMessage(channelConfig: ChannelConfig):BaseAction<SendGuildChannelMsg>{
-        return BaseAction(
-            ActionEnums.SEND_GUILD_CHANNEL_MSG,
-            SendGuildChannelMsg(channelConfig.guildId,channelConfig.channelId,this.toUnofficialMessageText())
-        )
+    fun LiveRoom.toUnofficialGuildMessage(channelConfig: ChannelConfig):SendGuildChannelMsg{
+        return SendGuildChannelMsg(channelConfig.guildId,channelConfig.channelId,this.toUnofficialMessageText())
     }
 
     fun LiveRoom.toUnofficialMessageText():String{

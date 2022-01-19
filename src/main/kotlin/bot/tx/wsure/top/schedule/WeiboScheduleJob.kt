@@ -12,11 +12,12 @@ import kotlinx.coroutines.delay
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import top.wsure.guild.common.utils.JsonUtils.objectToJson
+import top.wsure.guild.unofficial.UnOfficialClient
 import top.wsure.guild.unofficial.UnofficialMessageSender
 
 object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
     val logger: Logger = LoggerFactory.getLogger(javaClass)
-    override suspend fun execute(params: Map<String, String>, sender: UnofficialMessageSender?) {
+    override suspend fun execute(params: Map<String, String>, client: UnOfficialClient?) {
         logger.info("${this.name} - params：${params.objectToJson()}")
         params["cookie"]?.also { cookie ->
             logger.info("${this.name} - read cookie success")
@@ -33,7 +34,7 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
                     val newTopList = topList.filter { ! oldTopList.map { o -> o.id }.contains(it.id) }
                     if(newTopList.isNotEmpty()){
                         MapDBManager.WB_TOP[entry.key!!] = newTopList
-                        sender?.also { sender ->
+                        client?.sender?.also { sender ->
                             entry.value?.sendMblogMessage(sender,newTopList)
                         }
                     }
@@ -46,7 +47,7 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
                         // if oldList is null,it maybe init
                         return@onEach
                     }
-                    sender?.also { sender ->
+                    client?.sender?.also { sender ->
                         entry.value?.sendMblogMessage(sender,newList)
                     }
                 }
@@ -55,14 +56,12 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
         }
     }
 
-    fun List<ChannelConfig>.sendMblogMessage(sender: UnofficialMessageSender, mblogs: List<Mblog>){
+    suspend fun List<ChannelConfig>.sendMblogMessage(sender: UnofficialMessageSender, mblogs: List<Mblog>){
         this.forEach { guild ->
-            val msg = mblogs.joinToString("\n") { mblog ->
-                BaseAction(ActionEnums.SEND_GUILD_CHANNEL_MSG,
-                    SendGuildChannelMsg(guild.guildId,guild.channelId,mblog.toUnofficialMessageText())
-                ).objectToJson()
+            val msg = mblogs.joinToString("\n") { it.toUnofficialMessageText() }
+            if(msg.isNotBlank()){
+                sender.sendGuildChannelMsgAsync(SendGuildChannelMsg(guild.guildId,guild.channelId,msg))
             }
-            sender.sendMessage(msg)
         }
     }
 
@@ -73,8 +72,5 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
     fun addedWebList(oldWbList: List<Mblog>, newWbList:List<Mblog>):List<Mblog>{
         return newWbList.filter { nwb -> ! oldWbList.map { it.id}.contains(nwb.id ) }
     }
-
-
-
 }
 

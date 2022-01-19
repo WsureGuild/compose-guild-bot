@@ -1,17 +1,19 @@
 package bot.tx.wsure.top
 
+import bot.tx.wsure.top.cache.EhcacheManager
+import bot.tx.wsure.top.cache.MapDBManager
+import bot.tx.wsure.top.component.EditRoles
 import bot.tx.wsure.top.component.TestResponse
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BaseCronJob
-import bot.tx.wsure.top.cache.EhcacheManager
 import bot.tx.wsure.top.utils.FileUtils
-import bot.tx.wsure.top.cache.MapDBManager
 import bot.tx.wsure.top.utils.TimeUtils.DATE_FORMATTER
 import bot.tx.wsure.top.utils.WeiBoUtils
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFacePrefix
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFaceSuffix
 import bot.tx.wsure.top.utils.WeiBoUtils.filterMblogContext
 import bot.tx.wsure.top.utils.WeiBoUtils.toUnofficialMessageText
+import io.github.bonigarcia.wdm.WebDriverManager
 import it.justwrote.kjob.InMem
 import it.justwrote.kjob.kjob
 import it.justwrote.kjob.kron.Kron
@@ -21,12 +23,18 @@ import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.decodeHex
 import org.mapdb.DB
 import org.mapdb.DBMaker
+import org.openqa.selenium.*
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
 import top.wsure.bililiver.bililiver.BiliLiverChatUtils.brotli
 import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackage
 import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackageList
 import top.wsure.bililiver.bililiver.BiliLiverConsole
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
+import top.wsure.guild.official.OfficialClient
+import top.wsure.guild.official.dtos.operation.IdentifyConfig
 import top.wsure.guild.unofficial.UnOfficialClient
+import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -58,16 +66,17 @@ class ApplicationTest {
     @Test
     fun testOkhttp(){
         val listOfRTV = listOf(
-        "23260993",
-        "21672023",
-        "8721033",
-        "22778596",
-        "21484828",
-        "21403601",
-        "33942",
-        "22470208",
-        "22605464",
-        "21452505",)
+            "23260993",
+            "21672023",
+            "8721033",
+            "22778596",
+            "21484828",
+            "21403601",
+            "33942",
+            "22470208",
+            "22605464",
+            "21452505",
+        )
 
         listOfRTV.onEach {
             BiliLiverConsole(it)
@@ -237,4 +246,58 @@ class ApplicationTest {
             }
         }
     }
+
+    @Test
+    fun officialGuildLib(){
+        val list = listOf(
+            EditRoles()
+        )
+        val config = IdentifyConfig(101983172,"WrdeleagqlCQgGrMdnuEhk78eDYUXbCm")
+        OfficialClient(config,list)
+
+        runBlocking {
+            delay(99999999999999999)
+        }
+    }
+
+    @Test
+    fun getWbHtml(){
+        val savePath = "C:\\github\\compose-guild-bot\\logs\\hello-world.png"
+        val image = File(savePath)
+        val driver = chrome()
+        driver.get("https://m.weibo.cn/detail/4723338267853249")
+        val main = driver.findElement(By.className("main"))
+        val wrap = driver.findElement(By.className("wrap"))
+        val adWrap = driver.findElement(By.className("ad-wrap"))
+        (driver as JavascriptExecutor).executeScript("arguments[0].remove();arguments[1].remove(); ",wrap,adWrap)
+        val srcFile = (main as TakesScreenshot).getScreenshotAs(OutputType.FILE)
+        srcFile.copyTo(image,true)
+        driver.quit()
+    }
+    fun chrome(): WebDriver {
+        val options = ChromeOptions()
+        options.addArguments("--headless")
+        options.addArguments("--disable-gpu")
+        options.addArguments("--window-size=1080,1920")
+//        options.addArguments("screenshot")
+        WebDriverManager.chromedriver().setup()
+        return ChromeDriver(options)
+    }
+    @Test
+    fun getBiliHtml() {
+        val savePath = "C:\\github\\compose-guild-bot\\logs\\bili.png"
+        val image = File(savePath)
+        val driver = chrome()
+        driver.get("https://t.bilibili.com/613346021646216565")
+        //driver.manage().addCookie(Cookie("key", "value"))
+        val card = driver.findElement(By.className("detail-card"))
+        val panelArea = driver.findElement(By.className("panel-area"))
+        (driver as JavascriptExecutor).executeScript("arguments[0].remove();",panelArea,)
+        val vanPopover = driver.findElements(By.className("van-popover"))
+        vanPopover.forEach { (driver as JavascriptExecutor).executeScript("arguments[0].remove();",it) }
+        val srcFile = (card as TakesScreenshot).getScreenshotAs(OutputType.FILE)
+        srcFile.copyTo(image,true)
+//        driver.quit()
+    }
+
 }

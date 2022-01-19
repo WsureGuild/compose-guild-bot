@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory
 import top.wsure.bililiver.bililiver.BiliLiverEvent
 import top.wsure.bililiver.bililiver.dtos.event.cmd.VtrGiftLottery
 import top.wsure.guild.common.utils.JsonUtils.objectToJson
-import top.wsure.guild.unofficial.UnofficialMessageSender
+import top.wsure.guild.unofficial.UnOfficialClient
 
-class VtrGiftLotteryNotify(val config:List<ChannelConfig>, val sender: UnofficialMessageSender): BiliLiverEvent() {
+class VtrGiftLotteryNotify(val config:List<ChannelConfig>, val client: UnOfficialClient): BiliLiverEvent() {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     val liverMapGuild = mutableMapOf<String,Long>(
@@ -19,7 +19,7 @@ class VtrGiftLotteryNotify(val config:List<ChannelConfig>, val sender: Unofficia
         "七海Nana7mi" to 6000051636714649 ,
         "小可学妹" to 19995411637241900 ,
     )
-    override fun onVtrGiftLottery(vtrGiftLottery: VtrGiftLottery) {
+    override suspend fun onVtrGiftLottery(vtrGiftLottery: VtrGiftLottery) {
         logger.info("Room :{} ,谷 content:{},",room.objectToJson(),vtrGiftLottery.objectToJson())
         val rale = vtrGiftLottery.interactMsg.contains("虚拟主播专属超稀有奖品")
         val msg = " - ${if (rale) "⭐ ⭐ ⭐" else "@ @ @"} - \n「`${room.uname}`房间:${vtrGiftLottery.interactMsg}」"
@@ -29,12 +29,12 @@ class VtrGiftLotteryNotify(val config:List<ChannelConfig>, val sender: Unofficia
         }
         config.onEach {
             if(rale || guilds.contains(it.guildId)){
-                sender.sendMessage(unofficialGuildMessage(msg,it).objectToJson())
+                client.sender.sendGuildChannelMsgAsync(unofficialGuildMessage(msg,it))
             }
         }
     }
 
-    fun unofficialGuildMessage(msg:String,channel: ChannelConfig): BaseAction<SendGuildChannelMsg> {
-        return BaseAction(ActionEnums.SEND_GUILD_CHANNEL_MSG, SendGuildChannelMsg( channel.guildId,channel.channelId,msg ))  //6000051636714649,1370732,msg))
+    fun unofficialGuildMessage(msg:String,channel: ChannelConfig): SendGuildChannelMsg {
+        return SendGuildChannelMsg( channel.guildId,channel.channelId,msg )  //6000051636714649,1370732,msg))
     }
 }
