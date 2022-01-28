@@ -36,6 +36,6 @@ class SuperChatNotify(val config:List<ChannelConfig>, val client: UnOfficialClie
     }
 
     fun unofficialGuildMessage(msg:String,channel: ChannelConfig): SendGuildChannelMsg {
-        return SendGuildChannelMsg( channel.guildId,channel.channelId,msg )  //6000051636714649,1370732,msg))
+        return SendGuildChannelMsg( channel.guildId.toLong(),channel.channelId.toLong(),msg )  //6000051636714649,1370732,msg))
     }
 }

@@ -2,8 +2,8 @@ package bot.tx.wsure.top
 
 import bot.tx.wsure.top.cache.EhcacheManager
 import bot.tx.wsure.top.cache.MapDBManager
-import bot.tx.wsure.top.component.EditRoles
 import bot.tx.wsure.top.component.TestResponse
+import bot.tx.wsure.top.component.official.EditRoles
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BaseCronJob
 import bot.tx.wsure.top.utils.FileUtils
@@ -31,6 +31,7 @@ import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackage
 import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackageList
 import top.wsure.bililiver.bililiver.BiliLiverConsole
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
+import top.wsure.guild.common.utils.JsonUtils.objectToJson
 import top.wsure.guild.official.OfficialClient
 import top.wsure.guild.official.dtos.operation.IdentifyConfig
 import top.wsure.guild.unofficial.UnOfficialClient
@@ -171,7 +172,7 @@ class ApplicationTest {
     @Test
     fun testPackage(){
         val text = "困啊<span class=\"url-icon\"><img alt=[困] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_kun-0f87c3e1f8.png\" style=\"width:1em; height:1em;\" /></span>录音<span class=\"url-icon\"><img alt=[困] src=\"https://h5.sinaimg.cn/m/emoticon/icon/default/d_kun-0f87c3e1f8.png\" style=\"width:1em; height:1em;\" /></span> "
-        println( text.replace(WeiBoUtils.WBFacePrefix,"").replace(WeiBoUtils.WBFaceSuffix,""))
+        println( text.replace(WBFacePrefix,"").replace(WBFaceSuffix,""))
     }
 
     @Test
@@ -252,7 +253,7 @@ class ApplicationTest {
         val list = listOf(
             EditRoles()
         )
-        val config = IdentifyConfig(101983172,"WrdeleagqlCQgGrMdnuEhk78eDYUXbCm")
+        val config = IdentifyConfig(0,"")
         OfficialClient(config,list)
 
         runBlocking {
@@ -298,6 +299,11 @@ class ApplicationTest {
         val srcFile = (card as TakesScreenshot).getScreenshotAs(OutputType.FILE)
         srcFile.copyTo(image,true)
 //        driver.quit()
+    }
+
+    @Test
+    fun getRoomInfo(){
+        println( BiliLiverApi.getRoomInfo("23805066")?.objectToJson())
     }
 
 }

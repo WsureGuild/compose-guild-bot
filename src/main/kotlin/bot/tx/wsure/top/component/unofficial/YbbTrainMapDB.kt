@@ -1,24 +1,24 @@
 package bot.tx.wsure.top.component.unofficial
 
-import bot.tx.wsure.top.component.unofficial.YbbTrain.TopRecord.Companion.addItem
+import bot.tx.wsure.top.cache.MapDBManager
+import bot.tx.wsure.top.cache.MapDBWarp
+import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB.TopRecord.Companion.addItem
 import bot.tx.wsure.top.config.ChannelConfig
-import top.wsure.guild.unofficial.UnofficialMessageSender
+import bot.tx.wsure.top.utils.TimeUtils.todayString
+import kotlinx.serialization.Serializable
 import top.wsure.guild.unofficial.dtos.api.toSendGuildChannelMsgAction
 import top.wsure.guild.unofficial.dtos.event.message.GuildMessage
 import top.wsure.guild.unofficial.intf.UnOfficialBotEvent
-import bot.tx.wsure.top.cache.MapDBManager
-import bot.tx.wsure.top.cache.MapDBWarp
-import bot.tx.wsure.top.utils.TimeUtils.todayString
 
 /*
     YBB小火车
  */
-class YbbTrainMapDB(val ybbConfig: Map<Long, List<ChannelConfig>>) : UnOfficialBotEvent() {
+class YbbTrainMapDB(val ybbConfig: Map<String, List<ChannelConfig>>) : UnOfficialBotEvent() {
 
     override suspend fun onGuildMessage(message: GuildMessage) {
 
-        val channel = ybbConfig[message.guildId]
-        if (channel == null || channel.isEmpty() || channel.map { it.channelId }.contains(message.channelId)) {
+        val channel = ybbConfig[message.guildId.toString()]
+        if (channel == null || channel.isEmpty() || channel.map { it.channelId }.contains(message.channelId.toString())) {
             if (message.message == "ybb") {
 
                 val speed = (0..1000L).random()
@@ -74,16 +74,42 @@ class YbbTrainMapDB(val ybbConfig: Map<Long, List<ChannelConfig>>) : UnOfficialB
         return if (todayMap.get { it[saveKey] } == null) {
             todayMap.set { it[saveKey] = value }
             val list = guildTopQueue.addItem(
-                YbbTrain.TopRecord(
+                TopRecord(
                     this.sender.nickname,
                     value
-                ), comparator = YbbTrain.TopRecord.comparator()
+                ), comparator = TopRecord.comparator()
             )
             todayTopMap.set { it[this.guildId.toString()] = list }
             true
         } else {
             false
         }
+    }
+    @Serializable
+    data class TopRecord(
+        val userName:String,
+        val speed:Long
+    ) {
+        companion object{
+            fun comparator():Comparator<TopRecord>{
+                return Comparator { t1, t2 ->
+
+                    if(t2.speed < t1.speed) -1
+                    else if( t2.speed == t1.speed) 0
+                    else 1
+                }
+            }
+
+            fun <T> List<T>.addItem(
+                item:T,
+                top:Int = 10,
+                comparator: Comparator<T>):List<T>{
+                val list = this.toMutableList()
+                list.add(item)
+                return list.sortedWith(comparator).take(top)
+            }
+        }
+
     }
 
 }

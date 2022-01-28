@@ -12,3 +12,5 @@ ehcache/
 config/
 
 seq/
+
+cache/

@@ -1,77 +1,133 @@
 {
-  "weiboCookie": "",
+  "officialConfig": {
+    "botId": 0,
+    "token": ""
+  },
   "channels": [
+    {
+      "name": "kiyuu_notify",
+      "description": "kiyuu开播通知",
+      "guildId": "61079931642127547",
+      "channelId": "2581725",
+      "type": "UNOFFICIAL"
+    },
+    {
+      "name": "kiyuu_sc",
+      "description": "kiyuuSC",
+      "guildId": "61079931642127547",
+      "channelId": "2581728",
+      "type": "UNOFFICIAL"
+    },
+    {
+      "name": "kiyuu_dynamic",
+      "description": "kiyuu动态",
+      "guildId": "61079931642127547",
+      "channelId": "2498684",
+      "type": "UNOFFICIAL"
+    },
+    {
+      "name": "chiharu_notify",
+      "description": "chiharu开播通知",
+      "guildId": "13869361639212354",
+      "channelId": "1839261",
+      "type": "UNOFFICIAL"
+    },
+    {
+      "name": "chiharu_sc",
+      "description": "chiharuSC",
+      "guildId": "13869361639212354",
+      "channelId": "2678491",
+      "type": "UNOFFICIAL"
+    },
+    {
+      "name": "chiharu_dynamic",
+      "description": "chiharu动态",
+      "guildId": "13869361639212354",
+      "channelId": "1934302",
+      "type": "UNOFFICIAL"
+    },
     {
       "name": "nanami_notify",
       "description": "开播通知",
-      "guildId": 6000051636714649,
-      "channelId": 2072944
+      "guildId": "6000051636714649",
+      "channelId": "2072944",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "nanami_sc",
       "description": "海频SC",
-      "guildId": 6000051636714649,
-      "channelId": 1370732
+      "guildId": "6000051636714649",
+      "channelId": "1370732",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "nanami_ybb",
       "description": "海频YBB",
-      "guildId": 6000051636714649,
-      "channelId": 1560174
+      "guildId": "6000051636714649",
+      "channelId": "1560174",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "nanami_dynamic",
       "description": "海频动态",
-      "guildId": 6000051636714649,
-      "channelId": 1407453
+      "guildId": "6000051636714649",
+      "channelId": "1407453",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "azu_live_topic",
       "description": "梓频直播讨论",
-      "guildId": 36667731636792997,
-      "channelId": 1365148
+      "guildId": "36667731636792997",
+      "channelId": "1365148",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "azu_archives",
       "description": "梓频档案",
-      "guildId": 36667731636792997,
-      "channelId": 1732797
+      "guildId": "36667731636792997",
+      "channelId": "1732797"
     },
     {
       "name": "azu_ybb",
       "description": "梓频YBB",
-      "guildId": 36667731636792997,
-      "channelId": 1591085
+      "guildId": "36667731636792997",
+      "channelId": "1591085",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "azu_notify",
       "description": "梓频重要通知",
-      "guildId": 36667731636792997,
-      "channelId": 1365147
+      "guildId": "36667731636792997",
+      "channelId": "1365147",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "azu_dynamic",
       "description": "梓频动态",
-      "guildId": 36667731636792997,
-      "channelId": 1400120
+      "guildId": "36667731636792997",
+      "channelId": "1400120",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "xiaoke_sc",
       "description": "小可频SC",
-      "guildId": 19995411637241900,
-      "channelId": 1542326
+      "guildId": "19995411637241900",
+      "channelId": "1542326",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "xiaoke_dynamic",
       "description": "小可频动态",
-      "guildId": 19995411637241900,
-      "channelId": 1468457
+      "guildId": "19995411637241900",
+      "channelId": "1468457",
+      "type": "UNOFFICIAL"
     },
     {
       "name": "xiaoke_notify",
       "description": "小可频通知",
-      "guildId": 19995411637241900,
-      "channelId": 1467859
+      "guildId": "19995411637241900",
+      "channelId": "1467859",
+      "type": "UNOFFICIAL"
     }
   ],
   "superChatConfig": [
@@ -90,6 +146,14 @@
     {
       "key": "605",
       "channelName": "xiaoke_sc"
+    },
+    {
+      "key": "23805066",
+      "channelName": "kiyuu_sc"
+    },
+    {
+      "key": "22389319",
+      "channelName": "chiharu_sc"
     }
   ],
   "ybbTranConfig": [
@@ -99,33 +163,49 @@
   "weiboConfig": [
     {
       "key": "7198559139",
-      "channelName":"nanami_dynamic"
+      "channelName": "nanami_dynamic"
     },
     {
       "key": "2203177060",
-      "channelName":"azu_dynamic"
+      "channelName": "azu_dynamic"
     },
     {
       "key": "6377117491",
-      "channelName":"xiaoke_dynamic"
+      "channelName": "xiaoke_dynamic"
     },
     {
       "key": "2085108062",
-      "channelName":"nanami_ybb"
+      "channelName": "nanami_ybb"
+    },
+    {
+      "key": "7735096556",
+      "channelName": "kiyuu_dynamic"
+    },
+    {
+      "key": "7391961059",
+      "channelName": "chiharu_dynamic"
     }
   ],
   "bililiverConfig": [
     {
-      "key": "434334701",
-      "channelName":"nanami_notify"
+      "key": "21452505",
+      "channelName": "nanami_notify"
     },
     {
-      "key": "14387072",
-      "channelName":"xiaoke_notify"
+      "key": "605",
+      "channelName": "xiaoke_notify"
     },
     {
-      "key": "777656",
-      "channelName":"nanami_ybb"
+      "key": "23805066",
+      "channelName": "kiyuu_notify"
+    },
+    {
+      "key": "22389319",
+      "channelName": "chiharu_notify"
+    },
+    {
+      "key": "10339464",
+      "channelName": "nanami_ybb"
     }
   ],
   "jobConfig": {

@@ -7,9 +7,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -29,6 +27,9 @@ object TimeUtils {
             instant,
             TimeZone.getDefault().toZoneId()
         )
+    }
+    fun LocalDateTime.toEpochMilli():Long{
+        return  this.toInstant(OffsetDateTime.now().offset).toEpochMilli()
     }
 
 }

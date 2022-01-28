@@ -1,19 +1,25 @@
 package bot.tx.wsure.top
 
+import bot.tx.wsure.top.cache.MapDBManager
 import bot.tx.wsure.top.component.bililiver.SuperChatNotify
-import bot.tx.wsure.top.component.bililiver.VtrGiftLotteryNotify
+import bot.tx.wsure.top.component.official.EditRoles
 import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB
+import bot.tx.wsure.top.config.BotTypeEnum
 import bot.tx.wsure.top.config.Config
+import bot.tx.wsure.top.config.Global
 import bot.tx.wsure.top.config.Global.CONFIG_PATH
 import bot.tx.wsure.top.schedule.JobManager
 import bot.tx.wsure.top.utils.FileUtils
 import bot.tx.wsure.top.utils.FileUtils.readFileJson
 import bot.tx.wsure.top.utils.FileUtils.readResourceJson
-import bot.tx.wsure.top.cache.MapDBManager
-import top.wsure.guild.unofficial.UnOfficialClient
 import io.ktor.util.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import top.wsure.bililiver.bililiver.BiliLiverConsole
+import top.wsure.guild.official.OfficialClient
+import top.wsure.guild.official.dtos.operation.IdentifyConfig
+import top.wsure.guild.official.intf.OfficialBotApi
+import top.wsure.guild.unofficial.UnOfficialClient
+import top.wsure.guild.unofficial.intf.UnofficialApi
 
 @OptIn(InternalAPI::class, InternalCoroutinesApi::class)
 fun main() {
@@ -44,9 +50,16 @@ fun bootBot(){
         // todo
         YbbTrainMapDB(config.toYbbConfig()),
     )
+    Global.botSenderMap[BotTypeEnum.UNOFFICIAL] = UnofficialApi()
     // init gocqhttp bot client
     val unOfficialBotClient = UnOfficialClient(unofficialListeners)
 
+    // boot official
+    if(config.officialConfig != null){
+        val identifyConfig = IdentifyConfig(config.officialConfig.botId,config.officialConfig.token)
+        Global.botSenderMap[BotTypeEnum.OFFICIAL] = OfficialBotApi(identifyConfig.getBotToken())
+        OfficialClient(identifyConfig, listOf(EditRoles()))
+    }
     // todo
     val useBL = true
 
@@ -59,26 +72,8 @@ fun bootBot(){
         }
 
     }
-    val list = listOf(
-        "605",
-        "510",
-        "22778610",
-        "21756924",
-        "22605463",
-        "22470216",
-        "21672022",
-        "22389319",
-        "282208",
-    )
-    list.onEach { room ->
-        BiliLiverConsole(
-            room, mutableListOf(
-                VtrGiftLotteryNotify(scConfig.values.flatten(), unOfficialBotClient)
-            )
-        )
-    }
 
-    JobManager(config.jobConfig,unOfficialBotClient).start()
+    JobManager(config.jobConfig).start()
 }
 
 fun initConfig(): Config {

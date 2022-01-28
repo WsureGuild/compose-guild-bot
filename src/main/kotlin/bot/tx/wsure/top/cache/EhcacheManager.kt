@@ -1,6 +1,6 @@
 package bot.tx.wsure.top.cache
 
-import bot.tx.wsure.top.component.unofficial.YbbTrain
+import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB
 import kotlinx.serialization.Serializable
 import org.ehcache.Cache
 import org.ehcache.PersistentCacheManager
@@ -30,7 +30,7 @@ object EhcacheManager : Closeable {
             )
         )
         .withCache(
-            EhcacheItem.YBB_TOP.name, cacheConfigBuilder<String,MutableMap<String, List<YbbTrain.TopRecord>>>(
+            EhcacheItem.YBB_TOP.name, cacheConfigBuilder<String,MutableMap<String, List<YbbTrainMapDB.TopRecord>>>(
                 ResourcePoolsBuilder.newResourcePoolsBuilder()
                     .heap(10, EntryUnit.ENTRIES)
                     .offheap(1, MemoryUnit.MB)
@@ -42,7 +42,7 @@ object EhcacheManager : Closeable {
         .build(true)
 
     val ybb = EhcacheItem.YBB.getCache<String,MutableMap<String, Long>>()
-    val ybbTop = EhcacheItem.YBB_TOP.getCache<String,MutableMap<String, List<YbbTrain.TopRecord>>>()
+    val ybbTop = EhcacheItem.YBB_TOP.getCache<String,MutableMap<String, List<YbbTrainMapDB.TopRecord>>>()
 
     init {
         persistentCacheManager.close()
