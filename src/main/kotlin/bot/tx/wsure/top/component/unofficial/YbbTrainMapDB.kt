@@ -4,7 +4,7 @@ import bot.tx.wsure.top.cache.MapDBManager
 import bot.tx.wsure.top.cache.MapDBWarp
 import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB.TopRecord.Companion.addItem
 import bot.tx.wsure.top.config.ChannelConfig
-import bot.tx.wsure.top.utils.TimeUtils.todayString
+import top.wsure.guild.common.utils.TimeUtils.todayString
 import kotlinx.serialization.Serializable
 import top.wsure.guild.unofficial.dtos.api.toSendGuildChannelMsgAction
 import top.wsure.guild.unofficial.dtos.event.message.GuildMessage

@@ -54,7 +54,7 @@ object BiliDynamicSchedule: BaseCronJob("BiliDynamicSchedule","30 0/5 * * * ?"){
             }
             BotTypeEnum.UNOFFICIAL -> {
                 val sender = Global.botSenderMap[BotTypeEnum.UNOFFICIAL] as UnofficialApi
-                sender.sendGuildChannelMsg(SendGuildChannelMsg(channel.guildId.toLong(),channel.channelId.toLong(),img.fileToImageCode()))
+                sender.sendGuildChannelMsg(SendGuildChannelMsg(channel.guildId,channel.channelId.toLong(),img.fileToImageCode()))
             }
         }
     }

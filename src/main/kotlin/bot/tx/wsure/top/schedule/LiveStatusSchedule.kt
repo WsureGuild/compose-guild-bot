@@ -4,7 +4,7 @@ import bot.tx.wsure.top.cache.MapDBManager
 import bot.tx.wsure.top.config.BotTypeEnum
 import bot.tx.wsure.top.config.ChannelConfig
 import bot.tx.wsure.top.config.Global
-import bot.tx.wsure.top.utils.TimeUtils.toEpochMilli
+import top.wsure.guild.common.utils.TimeUtils.toEpochMilli
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
@@ -61,7 +61,7 @@ object LiveStatusSchedule : BaseCronJob("LiveStatusSchedule", "0 0/1 * * * ?") {
     }
 
     fun RoomInfo.toUnofficialGuildMessage(channelConfig: ChannelConfig):SendGuildChannelMsg{
-        return SendGuildChannelMsg(channelConfig.guildId.toLong(),channelConfig.channelId.toLong(),this.toUnofficialMessageText())
+        return SendGuildChannelMsg(channelConfig.guildId,channelConfig.channelId.toLong(),this.toUnofficialMessageText())
     }
 
     fun RoomInfo.toUnofficialMessageText():String{

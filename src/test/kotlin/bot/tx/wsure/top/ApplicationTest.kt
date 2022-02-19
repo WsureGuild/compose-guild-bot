@@ -7,9 +7,8 @@ import bot.tx.wsure.top.component.official.EditRoles
 import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BiliDynamicSchedule
 import bot.tx.wsure.top.utils.FileUtils
-import bot.tx.wsure.top.utils.SeleniumUtils
-import bot.tx.wsure.top.utils.TimeUtils.DATE_FORMATTER
-import bot.tx.wsure.top.utils.TimeUtils.toEpochMilli
+import top.wsure.guild.common.utils.TimeUtils.DATE_FORMATTER
+import top.wsure.guild.common.utils.TimeUtils.toEpochMilli
 import bot.tx.wsure.top.utils.WeiBoUtils
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFacePrefix
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFaceSuffix
@@ -23,7 +22,6 @@ import it.justwrote.kjob.kron.Kron
 import it.justwrote.kjob.kron.KronModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import okhttp3.internal.cache.DiskLruCache
 import okio.ByteString.Companion.decodeHex
 import org.mapdb.DB
 import org.mapdb.DBMaker
@@ -39,7 +37,7 @@ import top.wsure.guild.common.utils.JsonUtils.objectToJson
 import top.wsure.guild.official.OfficialClient
 import top.wsure.guild.official.dtos.operation.IdentifyConfig
 import top.wsure.guild.unofficial.UnOfficialClient
-import top.wsure.guild.unofficial.dtos.CQCode.urlToImageCode
+import top.wsure.guild.unofficial.intf.UnofficialApi
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
@@ -315,6 +313,21 @@ class ApplicationTest {
             println(LocalDateTime.now().toEpochMilli() - liveRoom.liveTime.toEpochMilli())
             println(LocalDateTime.now().toEpochMilli() - liveRoom.liveTime.toEpochMilli() < 5* 60 * 1000)
         }
+    }
+
+    @Test
+    fun getGuildInfo(){
+        println(UnofficialApi().getGuildMetaByGuest("61079931642127547")?.data?.createTime)
+    }
+
+    @Test
+    fun getGuildMemberProfile(){
+        println(UnofficialApi().getGuildMemberProfile("61079931642127547","144115218677969464")?.objectToJson())
+    }
+
+    @Test
+    fun getGuildRoles(){
+        println(UnofficialApi().getGuildRoles("61079931642127547")?.objectToJson())
     }
 
 }

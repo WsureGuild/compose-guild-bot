@@ -78,7 +78,7 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
                     val sender = Global.botSenderMap[BotTypeEnum.UNOFFICIAL] as UnofficialApi
                     val msg = mblogs.joinToString("\n") { it.toUnofficialMessageText() }
                     if(msg.isNotBlank()){
-                        sender.sendGuildChannelMsg(SendGuildChannelMsg(guild.guildId.toLong(),guild.channelId.toLong(),msg))
+                        sender.sendGuildChannelMsg(SendGuildChannelMsg(guild.guildId,guild.channelId.toLong(),msg))
                     }
                 }
             }

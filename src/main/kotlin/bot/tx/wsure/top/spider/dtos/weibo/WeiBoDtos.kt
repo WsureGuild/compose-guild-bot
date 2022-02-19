@@ -1,9 +1,17 @@
 package bot.tx.wsure.top.spider.dtos.weibo
 
-import bot.tx.wsure.top.utils.WBTimeSerializer
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import top.wsure.guild.common.utils.TimeUtils
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Serializable
 data class WeiBo(
@@ -132,3 +140,17 @@ data class User(
     @SerialName("verified_type_ext")
     val verifiedTypeExt: Int?
 )
+
+
+object WBTimeSerializer : KSerializer<ZonedDateTime> {
+    val WB_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss ZZZ yyyy", Locale.ENGLISH)// XXX yyyy
+    override fun deserialize(decoder: Decoder): ZonedDateTime {
+        return ZonedDateTime.parse(decoder.decodeString(), WB_FORMATTER)
+    }
+
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("WBTimeSerializer", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: ZonedDateTime) {
+        encoder.encodeString(value.format(WB_FORMATTER))
+    }
+}
