@@ -13,6 +13,8 @@ data class Config(
     val ybbTranConfig: List<String> = emptyList(),
     @SerialName("superChatConfig")
     val superChatConfig: List<CommConfig> = emptyList(),
+    @SerialName("biliDynamicConfig")
+    val biliDynamicConfig: List<CommConfig> = emptyList(),
     @SerialName("weiboConfig")
     val weiboConfig : List<CommConfig> = emptyList(),
     @SerialName("bililiverConfig")
@@ -25,23 +27,10 @@ data class Config(
     private fun List<String>.channelNameToConfig():List<ChannelConfig>{
         return channels.filter { this.contains(it.name) }
     }
-    private fun Map<String,List<CommConfig>>.toChannelConfig():Map<String, List<ChannelConfig>>{
-        return this.mapValues { e -> e.value.mapNotNull { channelsMap[it.channelName] } }
-    }
-    private fun List<CommConfig>.toConfigMap():Map<String,List<CommConfig>>{
-        return this.filter { it.key!= null }.groupBy { it.key!! }
-    }
 
-    fun toScConfig(): Map<String, List<ChannelConfig>> {
-        return superChatConfig.toConfigMap().toChannelConfig()
-    }
-
-    fun toWbConfig(): Map<String, List<ChannelConfig>> {
-        return weiboConfig.toConfigMap().toChannelConfig()
-    }
-
-    fun toBLConfig(): Map<String, List<ChannelConfig>> {
-        return bililiverConfig.toConfigMap().toChannelConfig()
+    fun toChannelConfig(configs:List<CommConfig>):Map<String, List<ChannelConfig>>{
+        return configs.filter { it.key!= null }.groupBy { it.key!! }
+            .mapValues { e -> e.value.mapNotNull { channelsMap[it.channelName] } }
     }
 
     fun toYbbConfig() : Map<String, List<ChannelConfig>>{

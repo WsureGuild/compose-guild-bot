@@ -36,23 +36,30 @@ object WeiboScheduleJob: BaseCronJob("WeiboScheduleJob","0 0/5 * * * ?"){
                 logger.info("${this.name} - start load :${entry.key}")
                 val wbList = WeiBoUtils.getMLogByUid(entry.key!!,cookie)
                 if(wbList.isNotEmpty()){
+                    val oldList = MapDBManager.WB_CACHE[entry.key!!, { mutableListOf() }].value
+
+                    val newList = addedWebList(oldList,wbList.filter { it.isTop == null || it.isTop != 1 })
+
                     val topList = wbList.filter { it.isTop != null && it.isTop == 1 }
                     val oldTopList =  MapDBManager.WB_TOP[entry.key!!, { mutableListOf() }].value
+                    logger.debug("before :${entry.key}${entry.value} oldTopList :")
+                    oldTopList.onEach { logger.debug(it.objectToJson()) }
                     val newTopList = topList.filter { ! oldTopList.map { o -> o.id }.contains(it.id) }
-                    if(newTopList.isNotEmpty()){
-                        MapDBManager.WB_TOP[entry.key!!] = newTopList
-                        entry.value?.sendMblogMessage(newTopList)
+                    if(newTopList.isNotEmpty()&&oldList.isNotEmpty()){
+//                        entry.value?.sendMblogMessage(newTopList)
                     }
-                    val oldList = MapDBManager.WB_CACHE[entry.key!!, { mutableListOf() }].value
-                    val newList = addedWebList(oldList,wbList.filter { it.isTop == null || it.isTop != 1 })
+
                     //save
+                    MapDBManager.WB_TOP[entry.key!!] = (topList + newList).distinctBy { it.id }
                     MapDBManager.WB_CACHE[entry.key!!] = mergeWebList(oldList , newList)
+
+                    logger.debug("end :${entry.key}${entry.value} oldTopList :")
+                    oldTopList.onEach { logger.debug(it.objectToJson()) }
                     //send
-                    if(oldList.isEmpty()){
+                    if(oldList.isNotEmpty()){
                         // if oldList is null,it maybe init
-                        return@onEach
+                        entry.value?.sendMblogMessage(newList)
                     }
-                    entry.value?.sendMblogMessage(newList)
                 }
                 delay(3000)
             }

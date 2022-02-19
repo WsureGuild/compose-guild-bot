@@ -7,6 +7,7 @@ import bot.tx.wsure.top.cache.MapDBUtils.getCacheByName
 import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB
 import bot.tx.wsure.top.utils.FileUtils
 import org.mapdb.DBMaker.fileDB
+import top.wsure.bililiver.bililiver.dtos.api.dynamic.DynamicCard
 import top.wsure.bililiver.bililiver.dtos.api.room.RoomInfo
 import java.io.File
 
@@ -35,4 +36,8 @@ object MapDBManager {
     val BL_CONFIG: MapDBWarp<String, List<ChannelConfig>> = MapDBWarp(db,getCacheByName(db,"BL_CONFIG"))
 
     val BL_ROOM_CACHE: MapDBWarp<String, RoomInfo> = MapDBWarp(db,getCacheByName(db,"BL_ROOM_CACHE"))
+
+    val BL_DYNAMIC_CONFIG: MapDBWarp<String, List<ChannelConfig>> = MapDBWarp(db,getCacheByName(db,"BL_DYNAMIC_CONFIG"))
+
+    val BL_DYNAMIC_CACHE: MapDBWarp<String, List<DynamicCard>> = MapDBWarp(db,getCacheByName(db,"BL_DYNAMIC_CACHE"))
 }

@@ -5,9 +5,11 @@ import bot.tx.wsure.top.cache.MapDBManager
 import bot.tx.wsure.top.component.TestResponse
 import bot.tx.wsure.top.component.official.EditRoles
 import bot.tx.wsure.top.config.Global.CACHE_PATH
-import bot.tx.wsure.top.schedule.BaseCronJob
+import bot.tx.wsure.top.schedule.BiliDynamicSchedule
 import bot.tx.wsure.top.utils.FileUtils
+import bot.tx.wsure.top.utils.SeleniumUtils
 import bot.tx.wsure.top.utils.TimeUtils.DATE_FORMATTER
+import bot.tx.wsure.top.utils.TimeUtils.toEpochMilli
 import bot.tx.wsure.top.utils.WeiBoUtils
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFacePrefix
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFaceSuffix
@@ -15,11 +17,13 @@ import bot.tx.wsure.top.utils.WeiBoUtils.filterMblogContext
 import bot.tx.wsure.top.utils.WeiBoUtils.toUnofficialMessageText
 import io.github.bonigarcia.wdm.WebDriverManager
 import it.justwrote.kjob.InMem
+import it.justwrote.kjob.KronJob
 import it.justwrote.kjob.kjob
 import it.justwrote.kjob.kron.Kron
 import it.justwrote.kjob.kron.KronModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import okhttp3.internal.cache.DiskLruCache
 import okio.ByteString.Companion.decodeHex
 import org.mapdb.DB
 import org.mapdb.DBMaker
@@ -35,6 +39,7 @@ import top.wsure.guild.common.utils.JsonUtils.objectToJson
 import top.wsure.guild.official.OfficialClient
 import top.wsure.guild.official.dtos.operation.IdentifyConfig
 import top.wsure.guild.unofficial.UnOfficialClient
+import top.wsure.guild.unofficial.dtos.CQCode.urlToImageCode
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
@@ -144,19 +149,13 @@ class ApplicationTest {
         val kjob = kjob(InMem) {
             extension(KronModule)
         }.start()
-
-        BaseCronJob::class.sealedSubclasses.mapNotNull { it.objectInstance }.onEach { job ->
-            kjob(Kron).kron(job) {
-                maxRetries = 3
-                execute {
-                    job.execute()
-                    println("${job.name} ${LocalDateTime.now().format(DATE_FORMATTER)}")
-                }
+        kjob(Kron).kron(object :KronJob("test", "30 0/1 * * * ?"){}) {
+            maxRetries = 3
+            execute {
+                BiliDynamicSchedule.execute()
             }
         }
 
-//
-//
 //
 //        kjob(Kron).kron(WeiboScheduleJob) {
 //            maxRetries = 3
@@ -165,7 +164,7 @@ class ApplicationTest {
 //                println("kjob.schedule1 ${LocalDateTime.now().format(DATE_FORMATTER)}")
 //            }
 //        }
-        delay(30000)
+        delay(3000000000000000000)
         kjob.shutdown()
     }
 
@@ -302,8 +301,20 @@ class ApplicationTest {
     }
 
     @Test
-    fun getRoomInfo(){
-        println( BiliLiverApi.getRoomInfo("23805066")?.objectToJson())
+    fun getDynamicTopList(){
+        println(BiliLiverApi.getDynamicTopList("434334701").objectToJson())
+    }
+
+    @Test
+    fun fixLiverNotify(){
+        val liveRoom = BiliLiverApi.getRoomInfo("605")
+        println(liveRoom?.objectToJson())
+        println(liveRoom?.liveTime?.toEpochMilli())
+        println(LocalDateTime.now().toEpochMilli())
+        if(liveRoom != null){
+            println(LocalDateTime.now().toEpochMilli() - liveRoom.liveTime.toEpochMilli())
+            println(LocalDateTime.now().toEpochMilli() - liveRoom.liveTime.toEpochMilli() < 5* 60 * 1000)
+        }
     }
 
 }

@@ -186,6 +186,32 @@
       "channelName": "chiharu_dynamic"
     }
   ],
+  "biliDynamicConfig": [
+    {
+      "key": "434334701",
+      "channelName": "nanami_dynamic"
+    },
+    {
+      "key": "7706705",
+      "channelName": "azu_dynamic"
+    },
+    {
+      "key": "14387072",
+      "channelName": "xiaoke_dynamic"
+    },
+    {
+      "key": "777656",
+      "channelName": "nanami_ybb"
+    },
+    {
+      "key": "1155425566",
+      "channelName": "kiyuu_dynamic"
+    },
+    {
+      "key": "558070433",
+      "channelName": "chiharu_dynamic"
+    }
+  ],
   "bililiverConfig": [
     {
       "key": "21452505",

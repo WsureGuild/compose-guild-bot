@@ -3,3 +3,9 @@ rootProject.name = "compose-guild-bot"
 includeBuild("../wsure-bililiver")
 includeBuild("../go-cqhttp-guild-bot")
 includeBuild("../qq-official-guild-bot")
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}

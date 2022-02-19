@@ -2,19 +2,19 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val exposedVersion:String by project
-val brotliVersion = "1.6.0"
-val operatingSystem: OperatingSystem = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentOperatingSystem()
 plugins {
     application
     kotlin("jvm") version "1.5.31"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31"
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.graalvm.buildtools.native") version "0.9.6"
 }
 
 group = "bot.tx.wsure.top"
-version = "0.0.2"
+version = "0.0.3"
+val mainClassPath = "bot.tx.wsure.top.ApplicationKt"
 application {
-    mainClass.set("bot.tx.wsure.top.ApplicationKt")
+    mainClass.set(mainClassPath)
 }
 
 repositories {
@@ -65,4 +65,28 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+}
+graalvmNative {
+//    toolchainDetection.set(false)
+    binaries {
+        named("main") {
+            debug.set(true) // Determines if debug info should be generated, defaults to false
+//            sharedLibrary.set(true)
+//            fallback.set(true)
+//            verbose.set(true)
+            mainClass.set(mainClassPath)
+//            buildArgs.add("--gc=G1")
+            useFatJar.set(false)
+            javaLauncher.set(javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(11))
+                vendor.set(JvmVendorSpec.matching("GraalVM Community"))
+            })
+        }
+    }
+}
+
+val myFatJar = tasks.register<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("myFatJar")
+
+tasks.named<org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask>("nativeCompile") {
+    classpathJar.set(myFatJar.flatMap { it.archiveFile })
 }

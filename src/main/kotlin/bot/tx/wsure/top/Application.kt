@@ -21,8 +21,9 @@ import top.wsure.guild.official.intf.OfficialBotApi
 import top.wsure.guild.unofficial.UnOfficialClient
 import top.wsure.guild.unofficial.intf.UnofficialApi
 
-@OptIn(InternalAPI::class, InternalCoroutinesApi::class)
-fun main() {
+//@OptIn(InternalAPI::class, InternalCoroutinesApi::class)
+fun main(args: Array<String>) {
+    println(args)
     FileUtils.copyResource(CONFIG_PATH)
     bootBot()
     /*
@@ -63,7 +64,7 @@ fun bootBot(){
     // todo
     val useBL = true
 
-    val scConfig = config.toScConfig()
+    val scConfig =  config.toChannelConfig(config.superChatConfig)
     if (useBL) {
         scConfig.onEach { room ->
             BiliLiverConsole(room.key, mutableListOf(
@@ -88,12 +89,18 @@ fun initConfig(): Config {
 fun initCacheConfig(config: Config){
     // init wb_config
     MapDBManager.WB_CONFIG.cache.clear()
-    config.toWbConfig().onEach {
+    config.toChannelConfig(config.weiboConfig).onEach {
         MapDBManager.WB_CONFIG[it.key] = it.value
     }
     // init bl_config
     MapDBManager.BL_CONFIG.cache.clear()
-    config.toBLConfig().onEach {
+    config.toChannelConfig(config.bililiverConfig).onEach {
         MapDBManager.BL_CONFIG[it.key] = it.value
     }
+    // init bl_dynamic_config
+    MapDBManager.BL_DYNAMIC_CONFIG.cache.clear()
+    config.toChannelConfig(config.biliDynamicConfig).onEach {
+        MapDBManager.BL_DYNAMIC_CONFIG[it.key] = it.value
+    }
+
 }
