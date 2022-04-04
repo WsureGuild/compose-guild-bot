@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="true"
+         monitoring="autodetect"
+         dynamicConfig="true">
+    <diskStore path="user.dir/ehcache" />
+    <cacheManagerPeerProviderFactory
+            class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+            properties="peerDiscovery=manual"/>
+    <defaultCache
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true"/>
+    <cache
+            name="YBB"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+    <cache
+            name="YBB_TOP"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+    <cache
+            name="WB_CONFIG"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+    <cache
+            name="WB_CACHE"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+    <cache
+            name="BL_CONFIG"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+    <cache
+            name="BL_ROOM_CACHE"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+    <cache
+            name="BL_DYNAMIC_CONFIG"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+    <cache
+            name="BL_DYNAMIC_CACHE"
+            maxElementsInMemory="1"
+            eternal="true"
+            overflowToDisk="true"
+            maxElementsOnDisk="0"
+            diskPersistent="true">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.RMICacheReplicatorFactory" />
+        <bootstrapCacheLoaderFactory class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+    </cache>
+</ehcache>

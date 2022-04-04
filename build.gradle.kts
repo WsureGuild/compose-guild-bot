@@ -50,9 +50,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jodatime:$exposedVersion")
 
-    implementation("org.mapdb:mapdb:3.0.8")
-    implementation("org.ehcache:ehcache:3.9.7")
-    implementation("com.esotericsoftware:kryo:5.2.0")
+    implementation("io.github.reactivecircus.cache4k:cache4k:0.4.0")
 
     implementation("it.justwrote:kjob-core:0.2.0")
     implementation("it.justwrote:kjob-kron:0.2.0")

@@ -1,19 +1,12 @@
 package bot.tx.wsure.top
 
-import bot.tx.wsure.top.cache.EhcacheManager
-import bot.tx.wsure.top.cache.MapDBManager
+import bot.tx.wsure.top.cache.C4KManager
 import bot.tx.wsure.top.component.TestResponse
 import bot.tx.wsure.top.component.official.EditRoles
-import bot.tx.wsure.top.config.Global.CACHE_PATH
 import bot.tx.wsure.top.schedule.BiliDynamicSchedule
-import bot.tx.wsure.top.utils.FileUtils
-import top.wsure.guild.common.utils.TimeUtils.DATE_FORMATTER
-import top.wsure.guild.common.utils.TimeUtils.toEpochMilli
 import bot.tx.wsure.top.utils.WeiBoUtils
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFacePrefix
 import bot.tx.wsure.top.utils.WeiBoUtils.WBFaceSuffix
-import bot.tx.wsure.top.utils.WeiBoUtils.filterMblogContext
-import bot.tx.wsure.top.utils.WeiBoUtils.toUnofficialMessageText
 import io.github.bonigarcia.wdm.WebDriverManager
 import it.justwrote.kjob.InMem
 import it.justwrote.kjob.KronJob
@@ -23,8 +16,6 @@ import it.justwrote.kjob.kron.KronModule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okio.ByteString.Companion.decodeHex
-import org.mapdb.DB
-import org.mapdb.DBMaker
 import org.openqa.selenium.*
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -34,6 +25,8 @@ import top.wsure.bililiver.bililiver.BiliLiverChatUtils.toChatPackageList
 import top.wsure.bililiver.bililiver.BiliLiverConsole
 import top.wsure.bililiver.bililiver.api.BiliLiverApi
 import top.wsure.guild.common.utils.JsonUtils.objectToJson
+import top.wsure.guild.common.utils.TimeUtils.DATE_FORMATTER
+import top.wsure.guild.common.utils.TimeUtils.toEpochMilli
 import top.wsure.guild.official.OfficialClient
 import top.wsure.guild.official.dtos.operation.IdentifyConfig
 import top.wsure.guild.unofficial.UnOfficialClient
@@ -80,6 +73,7 @@ class ApplicationTest {
             "22470208",
             "22605464",
             "21452505",
+            "23199319",
         )
 
         listOfRTV.onEach {
@@ -106,39 +100,16 @@ class ApplicationTest {
     }
 
     @Test
-    fun testRetry(){
-//        println("欢迎 \\u003c%Nana5mi%\\u003e 进入直播间".replace("欢迎 \\u003c%","").replace("%\\u003e 进入直播间",""))
-//        val welcome = Welcome()
-//        BiliLiverConsole("10339464",listOf(welcome))
-        val dbFile = Path(CACHE_PATH).toFile()
-        FileUtils.createFileAndDirectory(dbFile)
-        val db: DB = DBMaker.fileDB(dbFile)
-            .fileMmapEnable()
-            .closeOnJvmShutdown()
-            .make()
-        val map = DB.HashMapMaker<String, String>(db, "map").createOrOpen()
-        map["asdas"] = "adssadas"
+    fun testMapDB() = runBlocking{
+        val t1 = C4KManager.YBB.get("111"){ mutableMapOf() }
+        t1["1112"] = 1010L
 
-        println(map["asdas1"])
-    }
+//        C4KManager.YBB.put("111",t1)
 
-
-    @Test
-    fun testEhcache(){
-        EhcacheManager.ybb.put("AA", mutableMapOf("1" to 1L))
-        println( EhcacheManager.ybb.get("AA").entries.joinToString { it.key + " :  " +it.value })
-    }
-
-    @Test
-    fun testMapDB(){
-        val t1 = MapDBManager.YBB["111", { mutableMapOf() }]
-        t1.set {
-            it["1112"] = 1010L
-        }
-//        MapDBManager.YBB["111"] = t1
-
-        val t2 = t1.get { it["1112"] }
+        val t2 = t1["1112"]
         println(t2)
+        val t3 = C4KManager.YBB.get("111"){ mutableMapOf() }["1112"]
+        println(t3)
     }
 
 
@@ -178,28 +149,6 @@ class ApplicationTest {
         val regex1 = Regex("(?<=:\\d{2}).+?(?=「)")
         val regex2 = Regex("(?<=」).+?$")
         println(text.replace(regex1,"").replace(regex2,""))
-    }
-
-    @Test
-    fun testWeibo(){
-        val text = "派友JeremyMcFake：<br />从第0赛季起，<br />我就在这了，<br />玩了2000小时但还是玩成这样<br /><a  href=\\\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23Apex%E7%AC%AC11%E8%B5%9B%E5%AD%A3%23&extparam=%23Apex%E7%AC%AC11%E8%B5%9B%E5%AD%A3%23&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class=\\\"surl-text\\\">#Apex第11赛季#</span></a><a  href=\\\"https://m.weibo.cn/search?containerid=231522type%3D1%26t%3D10%26q%3D%23Apex%E8%8B%B1%E9%9B%84%23&extparam=%23Apex%E8%8B%B1%E9%9B%84%23&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class=\\\"surl-text\\\">#Apex英雄#</span></a> <br />大部分表示，抓钩那里，血压真的上来了<span class=\\\"url-icon\\\"><img alt=[二哈] src=\\\"https://h5.sinaimg.cn/m/emoticon/icon/others/d_erha-139d0e07bd.png\\\" style=\\\"width:1em; height:1em;\\\" /></span><br /><a  href=\\\"https://m.weibo.cn/p/index?extparam=APEX%E8%8B%B1%E9%9B%84&containerid=1008089eedf76d192882bdc668060ccd90621e&luicode=10000011&lfid=1076037198559139\\\" data-hide=\\\"\\\"><span class='url-icon'><img style='width: 1rem;height: 1rem' src='https://n.sinaimg.cn/photo/5213b46e/20180926/timeline_card_small_super_default.png'></span><span class=\\\"surl-text\\\">APEX英雄</span></a> <a data-url=\\\"http://t.cn/A6x8TN4I\\\" href=\\\"https://video.weibo.com/show?fid=1034:4714243665362961\\\" data-hide=\\\"\\\"><span class='url-icon'><img style='width: 1rem;height: 1rem' src='https://h5.sinaimg.cn/upload/2015/09/25/3/timeline_card_small_video_default.png'></span><span class=\\\"surl-text\\\">APEX英雄的微博视频</span></a> "
-        val res = text.replace(Regex("\\<br\\s*\\/>"),"\n")
-            .replace("</span></a>","")
-//            .replace(Regex("\\<a.+?>#"),"#").replace(Regex("#\\</.*?a>"),"# ")
-            .replace(WBFacePrefix,"").replace(WBFaceSuffix,"")
-        println(res)
-        println(text.filterMblogContext())
-        val cookie = ""
-        println(" ------------------------- -")
-        val uidList = listOf("7198559139","2203177060","6377117491","2085108062")
-        uidList.onEach { uid ->
-            val wbList = WeiBoUtils.getMLogByUid(uid,cookie)
-            wbList.onEach { mblog ->
-
-                println(mblog.toUnofficialMessageText())
-                println(" ------------------------- -")
-            }
-        }
     }
 
     @Test
@@ -330,4 +279,11 @@ class ApplicationTest {
         println(UnofficialApi().getGuildRoles("61079931642127547")?.objectToJson())
     }
 
+    @Test
+    fun testTime(){
+        val now = LocalDateTime.now()
+        println(now)
+        val withSecond0 = now.withNano(0).withSecond(0)
+        println(withSecond0.format(DATE_FORMATTER))
+    }
 }

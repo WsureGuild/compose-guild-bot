@@ -1,11 +1,11 @@
 package bot.tx.wsure.top.component.unofficial
 
-import bot.tx.wsure.top.cache.MapDBManager
-import bot.tx.wsure.top.cache.MapDBWarp
+import bot.tx.wsure.top.cache.C4KManager
 import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB.TopRecord.Companion.addItem
 import bot.tx.wsure.top.config.ChannelConfig
-import top.wsure.guild.common.utils.TimeUtils.todayString
+import io.github.reactivecircus.cache4k.Cache
 import kotlinx.serialization.Serializable
+import top.wsure.guild.common.utils.TimeUtils.todayString
 import top.wsure.guild.unofficial.dtos.api.toSendGuildChannelMsgAction
 import top.wsure.guild.unofficial.dtos.event.message.GuildMessage
 import top.wsure.guild.unofficial.intf.UnOfficialBotEvent
@@ -17,7 +17,7 @@ class YbbTrainMapDB(val ybbConfig: Map<String, List<ChannelConfig>>) : UnOfficia
 
     override suspend fun onGuildMessage(message: GuildMessage) {
 
-        val channel = ybbConfig[message.guildId.toString()]
+        val channel = ybbConfig[message.guildId]
         if (channel == null || channel.isEmpty() || channel.map { it.channelId }.contains(message.channelId.toString())) {
             if (message.message == "ybb") {
 
@@ -33,8 +33,7 @@ class YbbTrainMapDB(val ybbConfig: Map<String, List<ChannelConfig>>) : UnOfficia
             }
             if (message.message == "竞速榜") {
                 val top10 =
-                    MapDBManager.YBB_TOP[todayString(), { mutableMapOf() }].get { it[message.guildId.toString()] }
-                        ?: emptyList()
+                    C4KManager.YBB_TOP.get(todayString()) { mutableMapOf() }.getOrDefault(message.guildId,emptyList())
                 if (top10.isNotEmpty()) {
                     val res = message.toSendGuildChannelMsgAction("本频道前10位：\n" + top10.joinToString("\n") {
                         "${it.userName}\t${
@@ -53,33 +52,29 @@ class YbbTrainMapDB(val ybbConfig: Map<String, List<ChannelConfig>>) : UnOfficia
         }
     }
 
-    fun <K, V> MapDBWarp<K, V>.cleanDailyMuteCache() {
-        this.cache.filter { it.key != todayString() }.onEach { this.remove(it.key) }
-    }
+    suspend fun GuildMessage.addDailyMute(value: Long): Boolean {
+        C4KManager.YBB.cleanDailyMuteCache()
+        C4KManager.YBB_TOP.cleanDailyMuteCache()
 
-    fun GuildMessage.addDailyMute(value: Long): Boolean {
-        MapDBManager.YBB.cleanDailyMuteCache()
-        MapDBManager.YBB_TOP.cleanDailyMuteCache()
+        val todayMap = C4KManager.YBB.get(todayString()){ mutableMapOf() }
+        val todayTopMap = C4KManager.YBB_TOP.get(todayString()){ mutableMapOf() }
 
-        val todayMap = MapDBManager.YBB[todayString(), { mutableMapOf() }]
-        val todayTopMap = MapDBManager.YBB_TOP[todayString(), { mutableMapOf() }]
-
-        val guildTopQueue = todayTopMap.get { it[this.guildId.toString()] } ?: mutableListOf()
+        val guildTopQueue = todayTopMap.getOrPut(this.guildId){ mutableListOf()}
         /*
         .also {
         todayTopMap[this.guildId.toString()] = it
     }
          */
         val saveKey = "${this.guildId}::${this.userId}"
-        return if (todayMap.get { it[saveKey] } == null) {
-            todayMap.set { it[saveKey] = value }
+        return if (todayMap[saveKey] == null) {
+            todayMap[saveKey] = value
             val list = guildTopQueue.addItem(
                 TopRecord(
                     this.sender.nickname,
                     value
                 ), comparator = TopRecord.comparator()
             )
-            todayTopMap.set { it[this.guildId.toString()] = list }
+            todayTopMap[this.guildId] = list
             true
         } else {
             false
@@ -112,4 +107,8 @@ class YbbTrainMapDB(val ybbConfig: Map<String, List<ChannelConfig>>) : UnOfficia
 
     }
 
+}
+
+inline fun <reified K:Any,reified V:Any> Cache<K,V>.cleanDailyMuteCache() {
+    this.asMap().filter { it.key != todayString() }.mapNotNull { it }.onEach { this.invalidate(it.key!! as K) }
 }

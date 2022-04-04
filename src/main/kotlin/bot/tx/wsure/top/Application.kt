@@ -1,6 +1,6 @@
 package bot.tx.wsure.top
 
-import bot.tx.wsure.top.cache.MapDBManager
+import bot.tx.wsure.top.cache.C4KManager
 import bot.tx.wsure.top.component.bililiver.SuperChatNotify
 import bot.tx.wsure.top.component.official.EditRoles
 import bot.tx.wsure.top.component.unofficial.YbbTrainMapDB
@@ -12,8 +12,6 @@ import bot.tx.wsure.top.schedule.JobManager
 import bot.tx.wsure.top.utils.FileUtils
 import bot.tx.wsure.top.utils.FileUtils.readFileJson
 import bot.tx.wsure.top.utils.FileUtils.readResourceJson
-import io.ktor.util.*
-import kotlinx.coroutines.InternalCoroutinesApi
 import top.wsure.bililiver.bililiver.BiliLiverConsole
 import top.wsure.guild.official.OfficialClient
 import top.wsure.guild.official.dtos.operation.IdentifyConfig
@@ -26,6 +24,7 @@ fun main(args: Array<String>) {
     println(args)
     FileUtils.copyResource(CONFIG_PATH)
     bootBot()
+//    test()
     /*
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
         configureRouting()
@@ -88,19 +87,25 @@ fun initConfig(): Config {
 
 fun initCacheConfig(config: Config){
     // init wb_config
-    MapDBManager.WB_CONFIG.cache.clear()
+    C4KManager.WB_CONFIG.invalidateAll()
     config.toChannelConfig(config.weiboConfig).onEach {
-        MapDBManager.WB_CONFIG[it.key] = it.value
+        C4KManager.WB_CONFIG.put(it.key,it.value)
     }
     // init bl_config
-    MapDBManager.BL_CONFIG.cache.clear()
+    C4KManager.BL_CONFIG.invalidateAll()
     config.toChannelConfig(config.bililiverConfig).onEach {
-        MapDBManager.BL_CONFIG[it.key] = it.value
+        C4KManager.BL_CONFIG.put(it.key,it.value)
     }
     // init bl_dynamic_config
-    MapDBManager.BL_DYNAMIC_CONFIG.cache.clear()
+    C4KManager.BL_DYNAMIC_CONFIG.invalidateAll()
     config.toChannelConfig(config.biliDynamicConfig).onEach {
-        MapDBManager.BL_DYNAMIC_CONFIG[it.key] = it.value
+        C4KManager.BL_DYNAMIC_CONFIG.put(it.key,it.value)
     }
 
+}
+
+fun test(){
+    val config : Config = initConfig()
+    initCacheConfig(config)
+    JobManager(config.jobConfig).start()
 }
