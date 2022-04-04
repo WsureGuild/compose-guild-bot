@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "bot.tx.wsure.top"
-version = "0.0.3"
+version = "0.0.4"
 val mainClassPath = "bot.tx.wsure.top.ApplicationKt"
 application {
     mainClass.set(mainClassPath)
